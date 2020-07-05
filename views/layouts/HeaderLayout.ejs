@@ -13,7 +13,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <% if (topLogo.publication) { if (topLogo.publication == 'Publish') { %>
+          <% if (topLogo) { if (topLogo.publication == 'Publish') { %>
             <a class="navbar-brand" href="<%= topLogo.url_ %>">
               <img src="<%= topLogo.image_ %>" alt="">
             </a>
