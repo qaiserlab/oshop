@@ -1,0 +1,1 @@
+mongorestore --uri mongodb+srv://qaiserdev:m30ngm30ngAA@cluster0-51geo.mongodb.net --db db_marketplace D:/xampp/htdocs/cozmeed/dump-vps/cozmeed
