@@ -7,26 +7,26 @@ function validate()
 var memberIdValidator = [
   {
     validator: function (value, callback) {
-
-      var MemberModel = mongoose.model('Member');
-
-      MemberModel.findOne({ memberId: value }, 'memberId', function (error, row) {
-        callback(row?true:false);
+      return new Promise((resolve, reject) => {
+        var MemberModel = mongoose.model('Member');
+  
+        MemberModel.findOne({ memberId: value }, 'memberId', function (error, row) {
+          resolve(row?true:false);
+        });
       });
-
     },
     message: 'Member ID `{VALUE}` not found',
   },
 
   {
     validator: function (value, callback) {
+      return new Promise((resolve, reject) => {
+        var StockiestModel = mongoose.model('Stockiest');
 
-      var StockiestModel = mongoose.model('Stockiest');
-
-      StockiestModel.findOne({ memberId: value }, 'memberId', function (error, row) {
-        callback(!row);
+        StockiestModel.findOne({ memberId: value }, 'memberId', function (error, row) {
+          callback(!row);
+        });
       });
-
     },
     message: 'Member ID `{VALUE}` already registered as stockiest',
   },

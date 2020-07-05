@@ -29,33 +29,33 @@ function get()
 ************************/
 router.get('/', (req, res, next) => {
 
-  // var rs = await Model.find({ stockiestId: '' }).limit(100);
+  var rs = await Model.find({ stockiestId: '' }).limit(100);
 
-  // res.json({
-  //   state: 'success',
-  //   message: 'Sukses, membaca data',
-  //   data: rs,
-  // });
-
-  var MongoClient = require('mongodb').MongoClient;
-  var url = 'mongodb+srv://qaiserdev:m30ngm30ngAA@cluster0-51geo.mongodb.net/db_marketplace?retryWrites=true&w=majority';
-
-  MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    console.log("Database connected using Native MongoDB driver!");
-
-    db.collection("orders").find({ stockiestId: '' }).sort({orderDate: -1}).limit(500).toArray(function (err, data) {
-      db.close();
-      // console.log(data);
-
-      res.json({
-        state: 'success',
-        message: 'Sukses, membaca data',
-        data,
-      });
-    });
-
+  res.json({
+    state: 'success',
+    message: 'Sukses, membaca data',
+    data: rs,
   });
+
+  // var MongoClient = require('mongodb').MongoClient;
+  // var url = 'mongodb+srv://qaiserdev:m30ngm30ngAA@cluster0-51geo.mongodb.net/db_marketplace?retryWrites=true&w=majority';
+
+  // MongoClient.connect(url, function(err, db) {
+  //   if (err) throw err;
+  //   console.log("Database connected using Native MongoDB driver!");
+
+  //   db.collection("orders").find({ stockiestId: '' }).sort({orderDate: -1}).limit(500).toArray(function (err, data) {
+  //     db.close();
+  //     // console.log(data);
+
+  //     res.json({
+  //       state: 'success',
+  //       message: 'Sukses, membaca data',
+  //       data,
+  //     });
+  //   });
+
+  // });
   
 });
 
