@@ -13,21 +13,25 @@ var cors = require('cors');
 // MongoDB
 
 // var db = mongoose.connect('mongodb://127.0.0.1/cozmeed', {
-var db = mongoose.connect('mongodb+srv://qaiserdev:m30ngm30ngAA@cluster0-51geo.mongodb.net/db_marketplace?retryWrites=true&w=majority', {
-  useMongoClient: true,
-  server: {
-    socketOptions: {
-      socketTimeoutMS: 0,
-      connectionTimeout: 0
+try {
+  var db = mongoose.connect('mongodb+srv://qaiserdev:m30ngm30ngAA@cluster0-51geo.mongodb.net/db_marketplace?retryWrites=true&w=majority', {
+    useMongoClient: true,
+    server: {
+      socketOptions: {
+        socketTimeoutMS: 0,
+        connectionTimeout: 0
+      }
     }
-  }
-});
+  });
+} catch (error) {
+  console.error.bind(console, 'Mongodb connection error:');
+}
 
-db.on('error', console.error.bind(console, 'Mongodb connection error:'));
-db.once('open', function() {
-  console.log("Mongodb connected using mongoose!");
-  require('./tasks/bonus');
-});
+// db.on('error', );
+// db.once('open', function() {
+//   console.log("Mongodb connected using mongoose!");
+//   require('./tasks/bonus');
+// });
 loader(__dirname + '/models');
 
 var app = express();
