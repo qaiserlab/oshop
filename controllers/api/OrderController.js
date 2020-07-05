@@ -27,7 +27,7 @@ var BankModel = mongoose.model('Bank');
 /************************
 function get()
 ************************/
-router.get('/', (req, res, next) => {
+router.get('/', async (req, res, next) => {
 
   var rs = await Model.find({ stockiestId: '' }).limit(100);
 
