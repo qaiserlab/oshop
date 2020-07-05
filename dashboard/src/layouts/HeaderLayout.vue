@@ -141,13 +141,13 @@
             <!-- Menu Footer-->
             <li class="user-footer">
               <div class="pull-left">
-                <a href="javascript:" @click="expanded = false" style="font-size: 11px">
+                <a style="padding: 8px" href="javascript:" @click="expanded = false" style="font-size: 11px">
                   <i class="fa fa-fw ti-close"></i>
                   Close
                 </a>
               </div>
               <div class="pull-right">
-                <a href="javascript:" @click="handleLogout" style="font-size: 11px">
+                <a style="padding: 8px" href="javascript:" @click="handleLogout" style="font-size: 11px">
                   <i class="fa fa-fw ti-shift-right"></i>
                   Logout
                 </a>
