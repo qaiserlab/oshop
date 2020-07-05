@@ -249,7 +249,7 @@ router.post('/forgot-password', validateForgotPassword, async (req, res, next) =
     [email],
     'Oshop - Reset Password',
     'Silakan klik link dibawah ini untuk me-reset password akun Oshop Anda;<br><br>' +
-    '<a href="http://oshop.id/reset-password/' + code + '">RESET PASSWORD</a>'
+    '<a href="https://oshopdev.herokuapp.com/reset-password/' + code + '">RESET PASSWORD</a>'
   );
 
   res.json({
@@ -1078,12 +1078,12 @@ router.post('/approve', validateApprove, async (req, res, next) => {
     [email],
     'Selamat Bergabung bersama Oshop',
     'Selamat ' + fullName + ' Anda telah diterima sebagai salah satu Member Oshop, <br>' +
-    'silakan melakukan login di <a href="http://oshop.id">oshop.id</a> untuk melihat profil Anda'
+    'silakan melakukan login di <a href="https://oshopdev.herokuapp.com">Oshop</a> untuk melihat profil Anda'
   );
   if (phoneNumber)
     messager.sendSms(phoneNumber,
       'Selamat ' + fullName + ' Anda telah diterima sebagai salah satu Member Oshop,' +
-      'silakan melakukan login di oshop.id untuk melihat profil Anda'
+      'silakan melakukan login di Oshop untuk melihat profil Anda'
   );
 
   res.json({

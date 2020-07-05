@@ -180,7 +180,7 @@ router.post('/', validateOrder, async (req, res, next) => {
         'ke salah satu dari rekening berikut;<br><br>' +
         bankList + '<br>' +
         'setelah membayar Anda dapat melakukan konfirmasi dengan meng-klik link berikut: <br><br>' +
-        '<a href="http://oshop.id/shop/confirm-payment?code=' + data.code + '">KONFIRMASI PEMBAYARAN</a><br><br>'
+        '<a href="https://oshopdev.herokuapp.com/shop/confirm-payment?code=' + data.code + '">KONFIRMASI PEMBAYARAN</a><br><br>'
         // 'Berikut data pesanan Anda;' +
         // orderList
       );

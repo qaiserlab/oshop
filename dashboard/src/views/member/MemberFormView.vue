@@ -343,7 +343,7 @@
           this.result = result;
 
           if (result.state == 'success')
-            window.open('https://oshop.id/member/profile');
+            window.open('https://oshopdev.herokuapp.com/member/profile');
         });
       },
 

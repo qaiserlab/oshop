@@ -1,7 +1,7 @@
 var sha1 = require('sha1');
 
 // var baseUrl = 'http://localhost:3000';
-var baseUrl = 'https://oshop.id';
+var baseUrl = 'https://oshopdev.herokuapp.com';
 
 module.exports = {
   baseUrl,

@@ -3,11 +3,11 @@ info:
   title: Cozmeed API
   description: |
     API untuk Cozmeed online store
-    [https://oshop.id](http://oshop.id)
+    [https://oshopdev.herokuapp.com](https://oshopdev.herokuapp.com)
   version: 2.0.0
   contact:
     email: f.anaturdasa@gmail.com
-host: oshop.id
+host: oshopdev.herokuapp.com
 basePath: /api/v2
 schemes:
   - https

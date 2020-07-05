@@ -83,7 +83,7 @@ router.post('/', validate, async (req, res, next) => {
   var postedOn = Date.now();
   data.postedOn = postedOn;
 
-  var email = 'info@oshop.id';
+  var email = 'f.anaturdasa@gmail.com';
   messager.sendMailSpecific(
     data.email,
     data.name,

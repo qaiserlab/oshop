@@ -716,10 +716,10 @@
               <td><b>COZMEED INDONESIA</b></td>
             </tr>
             <tr>
-              <td><a href="https://oshop.id">https://oshop.id</a></td>
+              <td><a href="https://oshopdev.herokuapp.com">https://oshopdev.herokuapp.com</a></td>
             </tr>
             <tr>
-              <td>P. +62 (271) 679 2754 E. info@oshop.id</td>
+              <td>P. +62 (271) 679 2754 E. f.anaturdasa@gmail.com</td>
             </tr>
           </table>
 
