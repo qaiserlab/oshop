@@ -6,7 +6,10 @@ exports.save = function (tmpImage, newImage) {
     if (fs.existsSync('public/writable/tmp/' + tmpImage)) {
       newImage += '.png';
 
-      fs.rename(
+      console.log('TMP: ' + tmpImage);
+      console.log('NEW: ' + newImage);
+
+      fs.renameSync(
         'public/writable/tmp/' + tmpImage,
         'public/writable/archives/' + newImage
       );
