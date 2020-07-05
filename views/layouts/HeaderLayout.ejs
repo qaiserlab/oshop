@@ -1,0 +1,430 @@
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NXHTVSZ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<% include ../components/index %>
+
+<div id="HeaderLayout">
+  <header @mouseout="displayCart = false">
+    <div class="wrap-nav hidden-xs-down hidden-sm-down  hidden-md-down">
+      <div class="container">
+        <nav class="navbar navbar-toggleable-md navbar-light bg-white navbar-top">
+          <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <% if (topLogo.publication == 'Publish') { %>
+            <a class="navbar-brand" href="<%= topLogo.url_ %>">
+              <img src="<%= topLogo.image_ %>" alt="">
+            </a>
+          <% } %>
+          <div v-cloak class="collapse navbar-collapse justify-content-end" id="navbarResponsive">
+            <ul class="navbar-nav">
+              <%# <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-heart" aria-hidden="true"></i> Whislist</a>
+              </li>%>
+              <li class="nav-item">
+                <a @mouseover="displayCart = true" class="nav-link"
+                href="/shop/cart">
+                  <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                  Keranjang Belanja <span>({{ cart.length }})</span>
+                </a>
+              </li>
+
+              <% if (!session.authKey) { %>
+                <li class="nav-item active">
+                  <a class="nav-link" href="/register"><i class="fa fa-chevron-up active"></i> Register</a>
+                </li>
+                <li class="nav-item active">
+                  <a @click="showLogin(false)" class="nav-link" href="javascript:"><i class="fa fa-sign-in active"></i> Login</a>
+                </li>
+              <% } else { %>
+                <li class="nav-item">
+                  <small>/ <%= session.fullName %></small>
+                </li>
+                <li class="nav-item active" style="position: relative">
+                  <a class="nav-link"
+                  href="/member/profile"
+                  style="position: absolute; right: 0; top: -24px; width: 122px; text-align: right; text-transform: uppercase">
+                    <i class="icon user active"></i>
+                    <%= session.mode %> PANEL
+                  </a>
+
+                  <a @click="logout" class="nav-link" href="javascript:"><i class="fa fa-sign-out active"></i> Logout</a>
+                </li>
+              <% } %>
+
+            </ul>
+            <transition enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+              <div v-if="cart.length > 0 && displayCart"
+              @mouseover="displayCart = true"
+              class="wrap-shopping-cart">
+                <div class="shopping-cart" style="display: block">
+                  <ul class="shopping-cart-items">
+
+                    <li v-for="row in cart" class="clearfix">
+                      <img :src="'/writable/archives/' + row.featuredImage">
+                      <span class="item-name">{{ row.productName }}</span>
+                      <span class="item-price">{{ row.qty }} x {{ row.selectedGroup.price_ }}</span>
+                    </li>
+
+                  </ul>
+
+                  <a v-if="cart.length > 0" @click="checkoutOrLogin" href="javascript:" class="btn btn-secondary btn-red btn-block">Checkout</a>
+                </div>
+              </div>
+            </transition>
+
+          </div>
+        </nav>
+        <nav id="dropdown-menu" class="navbar navbar-toggleable-md navbar-light navbar-bottom">
+          <ul class="navbar-nav">
+
+            <% if (topMenu.menu) { %>
+              <% Object.keys(topMenu.menu).reverse().forEach(key => { var row = topMenu.menu[key] %>
+                <li class="nav-item <%= row.permalink == currentUrl?'active':'' %>" class="dropdown">
+
+                  <% if (!row.child) { %>
+                    <a class="nav-link" href="<%= row.permalink %>">
+                  <% } else { %>
+                    <a class="nav-link dropdown-toggle" href="javascript:" data-toggle="dropdown">
+                  <% } %>
+                    <%= row.title %>
+                  </a>
+
+                  <% if (row.child) { %>
+                    <ul class="dropdown-menu">
+                      <% Object.keys(row.child).reverse().forEach(childKey => { var rowChild = row.child[childKey] %>
+                        <li class="<%= rowChild.permalink == currentUrl?'active':'' %>">
+                          <a class="nav-link" href="<%= rowChild.permalink %>">
+                            <%= rowChild.title %>
+                          </a>
+                        </li>
+                      <% }); %>
+                    </ul>
+                  <% } %>
+
+                </li>
+              <% }); %>
+            <% } %>
+
+            </ul>
+            <form action="/shop/search" class="form-inline ml-auto">
+              <input name="keyword"
+              class="form-control mr-sm-2"
+              type="text"
+              value="<%= typeof keyword === 'undefined'?'':keyword %>">
+              <button class="my-2 my-sm-0" type="submit"><i class="icon search"></i></button>
+            </form>
+          </nav>
+        </div>
+      </div>
+      <div class="wrap-nav mobile hidden-lg-up">
+        <nav class="navbar fixed-top navbar-toggleable-md navbar-light bg-white navbar-top">
+          <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <a class="navbar-brand" href="/">
+            <img src="/assets/images/logo.svg" alt="">
+          </a>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+              <%# <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fa fa-heart" aria-hidden="true"></i> Whislist</a>
+              </li>%>
+              <li class="nav-item dropdown">
+
+                <a class="nav-link dropdown-toggle"
+                href="/shop/cart"
+                data-toggle="dropdown"
+                role="button"
+                aria-haspopup="true"
+                aria-expanded="false">
+                  <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                  Keranjang Belanja <span>({{ cart.length }})</span>
+                </a>
+
+                <div v-if="cart.length > 0" class="dropdown-menu">
+                  <div class="wrap-shopping-cart">
+                    <div class="shopping-cart">
+                      <ul class="shopping-cart-items">
+
+                        <li v-for="row in cart" class="clearfix">
+                          <img :src="'/writable/archives/' + row.featuredImage">
+                          <span class="item-name">{{ row.productName }}</span>
+                          <span class="item-price">{{ row.qty }} x {{ row.selectedGroup.price_ }}</span>
+                        </li>
+
+                      </ul>
+
+                      <a @click="checkoutOrLogin" href="javascript:" class="btn btn-secondary btn-red btn-block">Checkout</a>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <% if (!session.authKey) { %>
+                <li class="nav-item">
+                  <a class="nav-link" href="/register"><i class="fa fa-chevron-up"></i> Register</a>
+                </li>
+                <li class="nav-item">
+                  <a @click="showLogin(false)" class="nav-link" href="javascript:"><i class="fa fa-sign-in"></i> Login</a>
+                </li>
+              <% } else { %>
+                <li class="nav-item">
+                  <a class="nav-link" href="/member/profile">
+                    <i class="icon user"></i>
+                    <%= session.mode %> Panel
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a @click="logout" class="nav-link" href="javascript:"><i class="fa fa-sign-out"></i> Logout</a>
+                </li>
+              <% } %>
+
+              <% if (topMenu.menu) { %>
+                <% Object.keys(topMenu.menu).reverse().forEach(key => { var row = topMenu.menu[key] %>
+                  <li class="nav-item <%= row.child?'dropdown':'' %>">
+
+
+                    <% if (row.child) { %>
+                      <a class="nav-link <%= row.child?'dropdown-toggle':'' %>"
+                      href="<%= row.permalink %>"
+                      data-toggle="dropdown"
+                      role="button"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                        <%= row.title %>
+                      </a>
+
+                      <div class="dropdown-menu">
+                        <div class="wrap-shopping-cart">
+                          <div class="shopping-cart-1">
+                            <ul class="shopping-cart-items-1">
+
+                              <% Object.keys(row.child).reverse().forEach(childKey => { var rowChild = row.child[childKey] %>
+                                <li class="<%= rowChild.permalink == currentUrl?'active':'' %>">
+                                  <a class="nav-link" href="<%= rowChild.permalink %>">
+                                    <%= rowChild.title %>
+                                  </a>
+                                </li>
+                              <% }); %>
+
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                    <% } else { %>
+                      <a class="nav-link <%= row.child?'dropdown-toggle':'' %>"
+                      href="<%= row.permalink %>">
+                        <%= row.title %>
+                      </a>
+                    <% } %>
+
+                  </li>
+                <% }); %>
+
+              <% } %>
+
+              <form action="/shop/search" class="form-inline">
+                <input name="keyword"
+                class="form-control mr-sm-2"
+                type="text"
+                value="<%= typeof keyword === 'undefined'?'':keyword %>">
+                <button class="my-2 my-sm-0" type="submit"><i class="icon search"></i></button>
+              </form>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+    </header>
+
+  <ui-modal @close="hideLogin" :display="loginDialog" title="Login" icon="lock">
+    <div slot="message">
+
+      <ui-alert :data-source="result.data"
+      :display="result.state == 'invalid'"
+      @close="result.state = ''">
+        {{ result.message }}
+      </ui-alert>
+
+      <div class="form-group">
+        <ui-select v-model="form.mode"
+        placeholder="-------- Mode --------"
+        :data-source="rsMode"
+        data-field="id"
+        data-value="id">Login Sebagai</ui-select>
+      </div>
+
+      <div class="form-group">
+        <label>Username</label>
+        <input v-model="form.email" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input v-model="form.password" type="password" class="form-control">
+      </div>
+    </div>
+
+    <div slot="buttonbar">
+      <div style="margin-bottom: 16px; width: 100%">
+        <ui-button :loading="loginLoading" @click="login">Login</ui-button>
+        <ui-button @click="hideLogin" bs-type="danger">Batal</ui-button>
+      </div>
+      <div style="clear: both"></div>
+      <small style="text-align: right">
+        Anda belum menjadi member?
+        <a href="/register">Registrasi sebagai member baru</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;
+      </small>
+      <br>
+      <small style="text-align: right">
+        <a href="/forgot-password">Lupa Password?</a>
+      </small>
+    </div>
+  </ui-modal>
+
+</div>
+
+<script>
+  /******************
+  <id="Vue">
+  ******************/
+  var HeaderLayout = new Vue({
+    el: '#HeaderLayout',
+
+    /******************
+    <id="_data">
+    ******************/
+    data: {
+      session: {
+        email: '<%= session.email?session.email:"" %>',
+        authKey: '<%= session.authKey?session.authKey:"" %>',
+        fullName: '<%= session.fullName?session.fullName:"" %>',
+        type: 'member',
+      },
+
+      cart: <%- JSON.stringify(session.cart) %>,
+      displayCart: false,
+
+      result: {
+        state: '',
+        message: '',
+        data: {},
+      },
+
+      loginDialog: false,
+      loginLoading: false,
+      logoutLoading: false,
+
+      rsMode: [
+        { id: 'Member' },
+        { id: 'Stokist' },
+      ],
+
+      form: {
+        mode: 'Member',
+        email: '',
+        password: '',
+        type: 'member',
+        checkout: false,
+      },
+
+    },
+
+    /******************
+    <id="_computed">
+    ******************/
+    computed: {
+    },
+
+    /******************
+    <id="_mounted">
+    ******************/
+    mounted: function () {
+    },
+
+    /******************
+    <id="_methods">
+    ******************/
+    methods: {
+
+      /******************
+      <id="_login">
+      ******************/
+      login: function () {
+        this.loginLoading = true;
+
+        axios.post('/api/account/login', this.form).then(response => {
+
+          if (response.data.state == 'success') {
+            if (!this.form.checkout)
+              window.location = '/member/profile';
+            else
+              window.location = '/shop/cart/checkout';
+          }
+
+          this.result = response.data;
+          this.loginLoading = false;
+        });
+      },
+
+      /******************
+      <id="_logout">
+      ******************/
+      logout: function () {
+        this.logoutLoading = true;
+
+        axios.post('/api/account/logout', this.session).then(function (response) {
+
+          if (response.data.state == 'success')
+            window.location = '/';
+
+          this.logoutLoading = false;
+        }.bind(this));
+      },
+
+      /******************
+      <id="_showLogin">
+      ******************/
+      showLogin: function (checkout) {
+
+        this.form.email = '';
+        this.form.password = '';
+        this.form.checkout = checkout;
+
+        this.loginDialog = true;
+      },
+
+      /******************
+      <id="_hideLogin">
+      ******************/
+      hideLogin: function () {
+        this.loginDialog = false;
+      },
+
+      /******************
+      <id="_checkoutOrLogin">
+      ******************/
+      checkoutOrLogin: function () {
+        if (this.session.authKey)
+          window.location = '/shop/cart/checkout';
+        else
+          this.showLogin(true);
+      },
+
+      /******************
+      <id="_refreshCart">
+      ******************/
+      refreshCart: function (cart) {
+        this.cart = cart;
+      },
+
+    },
+  });
+</script>

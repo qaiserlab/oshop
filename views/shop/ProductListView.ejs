@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <nav id="breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/"><i class="fa fa-home"></i></a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/shop">Belanja</a>
+        </li>
+        <li class="breadcrumb-item active"><%= rowProductCategory.title %></li>
+      </ol>
+    </div>
+  </nav>
+
+  <section id="ProductListView" class="product-catalogue">
+    <div v-cloak class="container">
+      <div class="center">
+        <div class="row">
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <form class="select-product">
+              <div class="row justify-content-end">
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <select class="form-control">
+                      <option>Semua Ukuran</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <select v-model="form.pageRange" @change="reloadPage" class="form-control">
+                      <option value="5">Tampilkan: 5 produk</option>
+                      <option value="10">Tampilkan: 10 produk</option>
+                      <option value="20">Tampilkan: 20 produk</option>
+                      <option value="50">Tampilkan: 50 produk</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+
+            </form>
+          </div>
+
+          <% rsProduct.forEach(row => { %>
+            <div class="col-sm-2 col-md-2 col-lg-2">
+              <div class="product">
+                <div class="product-thumb">
+                  <a href="<%= row.permalink %>">
+                    <img src="<%= row.featuredImage_ %>">
+                  </a>
+                </div>
+                <!--
+                <span class="badge-dark-red">New</span>
+                <ul class="rating">
+                  <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  <li class="score-rating">(0)</li>
+                </ul>
+                -->
+                <div class="product-name">
+                  <a href="<%= row.permalink %>">
+                    <%= row.productName %>
+                  </a>
+                </div>
+                <div class="price"><%= row.price_ %></div>
+              </div>
+            </div>
+          <% }); %>
+
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <%- paginator.render() %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+
+    /******************
+    <id="Vue">
+    ******************/
+    var ProductListView = new Vue({
+      el: '#ProductListView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        form: {
+          pageRange: '<%= pageRange %>',
+        },
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_reloadPage">
+        ******************/
+        reloadPage: function () {
+          var xHref = window.location.href.split('?');
+          window.location = xHref[0] + '?range=' + this.form.pageRange;
+        },
+
+      },
+
+    });
+
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

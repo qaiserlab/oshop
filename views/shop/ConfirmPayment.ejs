@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="ConfirmPayment" class="about-us">
+    <div v-cloak class="container">
+
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <div class="about-us-content">
+            <h1 class="member-title">Konfirmasi Pembayaran Belanja</h1>
+
+            <div class="paper">
+
+              <div v-if="!success">
+                <ui-alert :data-source="result.data"
+                :display="result.state == 'invalid'"
+                @close="result.state = ''">
+                  {{ result.message }}
+                </ui-alert>
+
+                <div class="row form-table">
+                  <div class="col-md-2"></div>
+                  <div class="col-md-8">
+                    <ui-textbox v-model="form.code">Kode Invoice</ui-textbox>
+
+                    <b>Bank Pengirim</b>
+                    <ui-select v-model="form.bankSender"
+                    :data-source="rsBankSender"
+                    data-field="bank"
+                    data-value="bank"></ui-select>
+                    <ui-textbox v-model="form.fullName">Nama Pemilik Rekening</ui-textbox>
+
+                    <b>Bank Tujuan</b>
+                    <ui-select v-model="form.bankDestination"
+                    :data-source="rsBank_"
+                    data-field="bank"
+                    data-value="bank"></ui-select>
+
+                    <ui-textbox v-model="form.amount" only-numeric>Jumlah Transfer</ui-textbox>
+
+                    <label>Tanggal</label>
+                    <br>
+                    <ui-datepicker v-model="form.confirmDate"></ui-datepicker>
+                  </div>
+                </div>
+
+                <div class="button-group">
+                  <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                      <%# <ui-button href="/submit" bs-type="danger">Kembali</ui-button>%>
+                      <ui-button @click="submit" :loading="loading">Konfirmasi</ui-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-else>
+                <div class="row">
+                  <div class="col-md-2"></div>
+                  <div class="col-md-8">
+                    Terima kasih, Konfirmasi pembayaran telah terkirim dengan detail berikut;
+                    <br>
+                    <ul>
+                      <li><b>Kode Invoice:</b> {{ form.code }}</li>
+                      <li><b>Nama Lengkap:</b> {{ form.fullName }}</li>
+                      <li><b>Bank Pengirim:</b> {{ form.bankSender }}</li>
+                      <li><b>Bank Tujuan:</b> {{ form.bankDestination }}</li>
+                      <li><b>Jumlah Transfer:</b> {{ form.amount }}</li>
+                      <li><b>Tanggal:</b> {{ form.confirmDate }}</li>
+                    </ul>
+                    <br>
+                    Pesanan akan segera di proses setelah mendapat approval dari Cozmeed Network.
+                    <a href="/">Kembali ke Beranda</a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var ConfirmPayment = new Vue({
+      el: '#ConfirmPayment',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        session: {
+          email: '<%= session.email?session.email:"" %>',
+          authKey: '<%= session.authKey?session.authKey:"" %>',
+          type: 'member',
+        },
+
+        result: {
+          state: '',
+          message: '',
+          data: {},
+        },
+
+        loading: false,
+        success: false,
+
+        rsBankSender: <%- JSON.stringify(rsBankSender) %>,
+        rsBank: <%- JSON.stringify(rsBank) %>,
+
+        form: {
+          code: '<%= code %>',
+          fullName: '<%= rowMember.fullName %>',
+          bankSender: '',
+          bankDestination: '',
+          amount: '',
+          confirmDate: '<%= confirmDate %>',
+        },
+
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+
+        /******************
+        <id="_rsBank_">
+        ******************/
+        rsBank_: function () {
+          return this.rsBank.map(row => {
+            console.log(row);
+            row.bank = row.bank + ', ' + row.accountNumber + ' a/n ' + row.accountName;
+
+            return row;
+          });
+        },
+
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted: function () {
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_submit">
+        ******************/
+        submit: function () {
+          this.loading = true;
+
+          var url = '/api/order/confirm';
+          var data = this.form;
+
+          axios.put(url, data).then(function (response) {
+
+            this.result = response.data;
+            this.loading = false;
+
+            if (response.data.state == 'success') this.success = true;
+            body.stop().animate({scrollTop:0}, 500, 'swing');
+
+          }.bind(this));
+        },
+
+      },
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

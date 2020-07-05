@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <nav id="breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/"><i class="fa fa-home"></i></a>
+        </li>
+        <li class="breadcrumb-item active">
+          News
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <section id="NewsView" class="product-catalogue">
+    <div class="container">
+      <div class="center">
+        <div class="row">
+          <div class="col-sm-12 col-md-12 col-lg-12">
+
+            <form class="select-product">
+              <div class="row justify-content-end">
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <select v-model="form.pageRange" @change="reloadPage" class="form-control">
+                      <option value="6">Tampilkan: 6 berita</option>
+                      <option value="10">Tampilkan: 10 berita</option>
+                      <option value="20">Tampilkan: 20 berita</option>
+                      <option value="50">Tampilkan: 50 berita</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div>
+
+          <% rsNews.forEach(row => { %>
+            <div class="col-sm-6 col-md-6 col-lg-6">
+              <article>
+                <a href="<%= row.permalink %>" style="color: black">
+                  <b><%= row.title %></b>
+                </a>
+                <p>
+                  <% if (row.featuredImage) { %>
+                    <img src="<%= row.featuredImage_ %>"
+                    align="left"
+                    style="height: 120px; margin-right: 8px;">
+                  <% } %>
+
+                  <%= row.excerpt %>
+                  <br>
+                  <a href="<%= row.permalink %>">Read more...</a>
+                </p>
+              </article>
+            </div>
+          <% }); %>
+
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <%- paginator.render() %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+
+    /******************
+    <id="Vue">
+    ******************/
+    var NewsView = new Vue({
+      el: '#NewsView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        form: {
+          pageRange: '<%= pageRange %>',
+        },
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_reloadPage">
+        ******************/
+        reloadPage: function () {
+          var xHref = window.location.href.split('?');
+          window.location = xHref[0] + '?range=' + this.form.pageRange;
+        },
+
+      },
+
+    });
+
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

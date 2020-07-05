@@ -1,0 +1,109 @@
+.error-line {
+  color: red;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+}
+
+.ui-splash {
+  position: fixed;
+  right: 16px;
+  top: 16px;
+  z-index: 10000000000;
+}
+
+.ui-splash div {
+  background: green;
+  color: white;
+  padding: 16px;
+}
+
+.ui-textbox,
+.ui-textarea,
+.ui-select,
+.ui-radio {
+  margin-bottom: 16px;
+}
+
+.ui-panel .panel-title {
+  font-size: 22px;
+  color: gray;
+  border-bottom: dotted gray 1px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.pagination {
+  margin-top: 48px;
+}
+
+.pagination a {
+  display: block;
+  min-width: 56px;
+  text-align: center;
+  padding: 16px;
+  font-size: 16px;
+  border: solid silver 1px;
+  color: gray;
+}
+
+.pagination li {
+  margin-right: 8px;
+}
+
+.pagination li.active {
+  background: whitesmoke;
+}
+
+#dropdown-menu .nav-item {
+  position: relative;
+}
+
+#dropdown-menu .dropdown-menu {
+  position: absolute;
+  left: 0;
+  top: 32px;
+}
+
+#dropdown-menu.navbar-toggleable-md .navbar-nav .nav-link {
+  padding-right: 8px;
+}
+
+#dropdown-menu ul > li > ul > li .nav-link {
+  text-transform: none;
+}
+
+#dropdown-menu ul > li > ul > li .nav-link:hover {
+  background: #F0F0F0;
+}
+
+.about-us-content .member-title {
+  margin-bottom: 32px;
+}
+
+.about-us-content .paper {
+  margin-left: 48px;
+  margin-right: 48px;
+}
+
+.about-us-content .button-group {
+  margin-top: 48px;
+}
+
+.about-us-content .form-table .row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-bottom: dashed silver 1px;
+  font-size: 14px;
+}
+
+#MenuView .nav-item {
+  text-align: left;
+}
+
+#MenuView .sub-link {
+  padding: 8px;
+}
+

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="RiwayatBelanjaView" class="about-us">
+    <div v-cloak class="container">
+
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title"><%= title %></h1>
+
+            <div class="paper">
+              <form @submit.prevent="generateReport" method="get">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div style="display: inline-block">
+                      <ui-datepicker name="from" v-model="form.from"></ui-datepicker>
+                    </div>
+                    <div style="display: inline-block">
+                      <ui-datepicker name="to" v-model="form.to">s/d</ui-datepicker>
+                    </div>
+                    <div style="float: right">
+                      <ui-button type="submit" icon="bolt"></ui-button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <br>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th colspan="4" style="text-align: center">Total</th>
+                      </tr>
+                      <tr>
+                        <th style="text-align: center">PV Pribadi</th>
+                        <th style="text-align: center">PV Kaki Kiri</th>
+                        <th style="text-align: center">PV Kaki Tengah</th>
+                        <th style="text-align: center">PV Kaki Kanan</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style="text-align: center"><%= personalPv %></td>
+                        <td style="text-align: center"><%= leftPv %></td>
+                        <td style="text-align: center"><%= middlePv %></td>
+                        <td style="text-align: center"><%= rightPv %></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <table class="table">
+                    <thead>
+                      <th>Invoice</th>
+                      <th>Tanggal</th>
+                      <th style="text-align: right">Status</th>
+                      <th style="text-align: right">Total</th>
+                    </thead>
+                    <tbody>
+
+                      <% rsOrder.forEach(row => { if (row.total > 0) { %>
+                        <tr>
+                          <td>
+                            <a href="/member/riwayat-belanja/<%= row.type %>/<%= row.code %>">
+                              <%= row.code %>
+                            </a>
+                          </td>
+                          <td>
+                            <%= row.orderDate_ %> - <%= row.dueDate_ %>
+                          </td>
+                          <td style="text-align: right">
+                            <div class="badge badge-primary"><%= row.status %></div>
+                          </td>
+                          <td style="text-align: right">
+                            <%= row.total_ %>
+                          </td>
+                        </tr>
+                      <% }}); %>
+
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var RiwayatBelanjaView = new Vue({
+      el: '#RiwayatBelanjaView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        form: {
+          from: '<%= from_ %>',
+          to: '<%= to_ %>',
+        },
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_generateReport">
+        ******************/
+        generateReport() {
+          window.location = '/member/riwayat-belanja?' + $.param(this.form);
+        },
+
+      },
+
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

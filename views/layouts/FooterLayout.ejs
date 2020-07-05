@@ -1,0 +1,72 @@
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-5 col-md-5 col-lg-5">
+        <h5>Tentang Kami</h5>
+        <div class="logo-footer">
+          <% if (bottomLogo.publication == 'Publish') { %>
+            <a class="navbar-brand" href="<%= bottomLogo.url_ %>">
+              <img src="<%= bottomLogo.image_ %>" alt="">
+            </a>
+          <% } %>
+        </div>
+        <div class="about-detail">
+          <p>
+            Cozmeed Network International (CNI) adalah perushaan
+            yang bergerak dalam bidang Direct Selling berbasis
+            online dengan menawarkan produk outdoor live style.
+          </p>
+        </div>
+        <h5>Hubungi Kami</h5>
+        <div class="address-phone">
+          Jalan Slamet Riyadi 100, Solo <br>
+          <strong>P.</strong> +62 (271) 679 2754 <strong>E.</strong>
+          <a href="mailto:info@cozmeed.id" target="_top">info@cozmeed.id</a>
+        </div>
+      </div>
+      <div class="col-sm-7 col-md-7 col-lg-7">
+        <div class="row">
+          <div class="col-sm-4">
+            <h5><%= bottomMenu1.title %></h5>
+            <ul>
+              <% if (bottomMenu1.menu) { %>
+              <% Object.keys(bottomMenu1.menu).reverse().forEach(key => { var row = bottomMenu1.menu[key] %>
+                <li><a href="<%= row.permalink %>"><%= row.title %></a></li>
+              <% }); %>
+              <% } %>
+            </ul>
+          </div>
+          <div class="col-sm-4">
+            <h5><%= bottomMenu2.title %></h5>
+            <ul>
+              <% if (bottomMenu2.menu) { %>
+              <% Object.keys(bottomMenu2.menu).reverse().forEach(key => { var row = bottomMenu2.menu[key] %>
+                <li><a href="<%= row.permalink %>"><%= row.title %></a></li>
+              <% }); %>
+              <% } %>
+            </ul>
+          </div>
+          <div class="col-sm-4">
+            <h5><%= bottomMenu3.title %></h5>
+            <ul>
+              <% if (bottomMenu3.menu) { %>
+              <% Object.keys(bottomMenu3.menu).reverse().forEach(key => { var row = bottomMenu3.menu[key] %>
+                <li><a href="<%= row.permalink %>"><%= row.title %></a></li>
+              <% }); %>
+              <% } %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="copyright">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <p>Copyright &copy; 2017 Cozmeed. All Right Reserved</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

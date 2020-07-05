@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <link rel="stylesheet" href="/assets/stylesheets/genealogy-tree.css">
+
+  <% include ../layouts/HeaderLayout %>
+
+  <!-- Content here -->
+
+  <section id="GenealogyTreeView" class="about-us">
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title">Genealogy Tree</h1>
+
+            <div class="paper">
+
+              <div>
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th colspan="4">Total</th>
+                    </tr>
+                    <tr>
+                      <th>PV Pribadi</th>
+                      <th>PV Kaki Kiri</th>
+                      <th>PV Kaki Tengah</th>
+                      <th>PV Kaki Kanan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><%= rowMemberXp.personalPv %></td>
+                      <td><%= rowMemberXp.leftPv %></td>
+                      <td><%= rowMemberXp.middlePv %></td>
+                      <td><%= rowMemberXp.rightPv %></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div>
+                <div class="col-md-4" style="float: left; text-align: center; color: gray">
+                  <h4>Total Left</h4>
+                  <h2><%= rowMember.totalLeft || 0 %></h2>
+                </div>
+                <div class="col-md-4" style="float: left; text-align: center; color: gray">
+                  <h4>Total Middle</h4>
+                  <h2><%= rowMember.totalMiddle || 0 %></h2>
+                </div>
+                <div class="col-md-4" style="float: left; text-align: center; color: gray">
+                  <h4>Total Right</h4>
+                  <h2><%= rowMember.totalRight || 0 %></h2>
+                </div>
+                <div class="clearfix"></div>
+                <hr>
+              </div>
+
+              <div class="clearfix" id="tree-diagram" style="margin-top: 20px;">
+                <div class="table-responsive">
+                  <div class="treewrap treemain clearfix">
+                    <div class="lev-1" style="margin-top: 0;">
+
+                      <% if (rowMember.upline) { %>
+                        <% if (rowMember.memberId != session.memberId) { %>
+                          <a href="/member/genealogy-tree?id=<%= rowMember.upline._id %>" class="box-user">
+                        <% } else { %>
+                          <a href="javascript:" class="box-user">
+                        <% } %>
+                          <div class="fig-user active">
+                            <div class="desc-user">
+                              <span class="name-s"><%= rowMember.upline.memberId %></span>
+                              <span class="desc-s"><%= rowMember.upline.fullName %></span>
+                            </div>
+                          </div>
+                        </a>
+                        <div class="vLine"></div>
+                      <% } %>
+
+                      <a href="/member/genealogy-tree?id=<%= rowMember._id %>" class="box-user">
+                        <div class="fig-user active">
+                          <div class="desc-user">
+                            <span class="name-s"><%= rowMember.memberId %></span>
+                            <span class="desc-s"><%= rowMember.fullName %></span>
+                          </div>
+                        </div>
+                      </a>
+                      <div class="vLine"></div>
+                      <div class="hLine"></div>
+                      <div class="lev-2 fl">
+
+                        <% if (!rowMember.leftFoot.empty) { %>
+                          <a href="/member/genealogy-tree?id=<%= rowMember.leftFoot._id %>" class="box-user">
+                            <div class="fig-user">
+                              <div class="desc-user">
+                                <span class="name-s"><%= rowMember.leftFoot.memberId %></span>
+                                <span class="desc-s"><%= rowMember.leftFoot.fullName %></span>
+                              </div>
+                            </div>
+                          </a>
+                        <% } else { %>
+                          <a href="/member/genealogy-tree?id=<%= rowMember.leftFoot._id %>" class="box-user">
+                            <div class="fig-user">
+                              <div class="desc-user">
+                                <span class="desc-s">KOSONG</span>
+                              </div>
+                            </div>
+                          </a>
+                        <% } %>
+
+                        <% if (rowMember.leftFoot) { %>
+                          <div class="vLine"></div>
+                          <div class="hLine"></div>
+                          <div class="treewrap clearfix flex">
+                            <div class="lev-3 fl sm">
+
+                              <% if (rowMember.leftFoot.leftFoot) { %>
+                                <a href="/member/genealogy-tree?id=<%= rowMember.leftFoot.leftFoot._id %>" class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      <span class="name-s"><%= rowMember.leftFoot.leftFoot.memberId %></span>
+                                      <span class="desc-s"><%= rowMember.leftFoot.leftFoot.fullName %></span>
+                                    </div>
+                                  </div>
+                                </a>
+                              <% } else { %>
+                                <div class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      KOSONG
+                                    </div>
+                                  </div>
+                                </div>
+                              <% } %>
+
+                            </div>
+                            <div class="lev-3 fm sm">
+
+                              <% if (rowMember.leftFoot.middleFoot) { %>
+                                <a href="/member/genealogy-tree?id=<%= rowMember.leftFoot.middleFoot._id %>" class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      <span class="name-s"><%= rowMember.leftFoot.middleFoot.memberId %></span>
+                                      <span class="desc-s"><%= rowMember.leftFoot.middleFoot.fullName %></span>
+                                    </div>
+                                  </div>
+                                </a>
+                              <% } else { %>
+                                <div class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      KOSONG
+                                    </div>
+                                  </div>
+                                </div>
+                              <% } %>
+
+                            </div>
+                            <div class="lev-3 fr sm">
+
+                              <% if (rowMember.leftFoot.rightFoot) { %>
+                                <a href="/member/genealogy-tree?id=<%= rowMember.leftFoot.rightFoot._id %>" class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      <span class="name-s"><%= rowMember.leftFoot.rightFoot.memberId %></span>
+                                      <span class="desc-s"><%= rowMember.leftFoot.rightFoot.fullName %></span>
+                                    </div>
+                                  </div>
+                                </a>
+                              <% } else { %>
+                                <div class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      KOSONG
+                                    </div>
+                                  </div>
+                                </div>
+                              <% } %>
+
+                            </div>
+                          </div>
+                        </div>
+                      <% } %>
+
+                      <div class="lev-2 fm">
+
+                        <% if (!rowMember.middleFoot.empty) { %>
+                          <a href="/member/genealogy-tree?id=<%= rowMember.middleFoot._id %>" class="box-user">
+                            <div class="fig-user">
+                              <div class="desc-user">
+                                <span class="name-s"><%= rowMember.middleFoot.memberId %></span>
+                                <span class="desc-s"><%= rowMember.middleFoot.fullName %></span>
+                              </div>
+                            </div>
+                          </a>
+                        <% } else { %>
+                          <div class="box-user">
+                            <div class="fig-user">
+                              <div class="desc-user">
+                                <span class="desc-s">KOSONG</span>
+                              </div>
+                            </div>
+                          </div>
+                        <% } %>
+
+                        <% if (rowMember.middleFoot) { %>
+                          <div class="vLine"></div>
+                          <div class="hLine"></div>
+                          <div class="treewrap clearfix flex">
+                            <div class="lev-3 fl sm">
+
+                              <% if (rowMember.middleFoot.leftFoot) { %>
+                                <a href="/member/genealogy-tree?id=<%= rowMember.middleFoot.leftFoot._id %>" class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      <span class="name-s"><%= rowMember.middleFoot.leftFoot.memberId %></span>
+                                      <span class="desc-s"><%= rowMember.middleFoot.leftFoot.fullName %></span>
+                                    </div>
+                                  </div>
+                                </a>
+                              <% } else { %>
+                                <div class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      <span class="desc-s">KOSONG</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              <% } %>
+
+                            </div>
+                            <div class="lev-3 fm sm">
+
+                              <% if (rowMember.middleFoot.middleFoot) { %>
+                                <a href="/member/genealogy-tree?id=<%= rowMember.middleFoot.middleFoot._id %>" class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      <span class="name-s"><%= rowMember.middleFoot.middleFoot.memberId %></span>
+                                      <span class="desc-s"><%= rowMember.middleFoot.middleFoot.fullName %></span>
+                                    </div>
+                                  </div>
+                                </a>
+                              <% } else { %>
+                                <div class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      KOSONG
+                                    </div>
+                                  </div>
+                                </div>
+                              <% } %>
+
+                            </div>
+                            <div class="lev-3 fr sm">
+
+                              <% if (rowMember.middleFoot.rightFoot) { %>
+                                <a href="/member/genealogy-tree?id=<%= rowMember.middleFoot.rightFoot._id %>" class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      <span class="name-s"><%= rowMember.middleFoot.rightFoot.memberId %></span>
+                                      <span class="desc-s"><%= rowMember.middleFoot.rightFoot.fullName %></span>
+                                    </div>
+                                  </div>
+                                </a>
+                              <% } else { %>
+                                <div class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      KOSONG
+                                    </div>
+                                  </div>
+                                </div>
+                              <% } %>
+
+                            </div>
+                          </div>
+                        <% } %>
+
+                      </div>
+                      <div class="lev-2 fr">
+
+                        <% if (!rowMember.rightFoot.empty) { %>
+                          <a href="/member/genealogy-tree?id=<%= rowMember.rightFoot._id %>" class="box-user">
+                            <div class="fig-user">
+                              <div class="desc-user">
+                                <span class="name-s"><%= rowMember.rightFoot.memberId %></span>
+                                <span class="desc-s"><%= rowMember.rightFoot.fullName %></span>
+                              </div>
+                            </div>
+                          </a>
+                        <% } else { %>
+                          <div class="box-user">
+                            <div class="fig-user">
+                              <div class="desc-user">
+                                <span class="desc-s">KOSONG</span>
+                              </div>
+                            </div>
+                          </div>
+                        <% } %>
+
+                        <% if (rowMember.rightFoot) { %>
+                          <div class="vLine"></div>
+                          <div class="hLine"></div>
+                          <div class="treewrap clearfix flex">
+                            <div class="lev-3 fl sm">
+
+                              <% if (rowMember.rightFoot.leftFoot) { %>
+                                <a href="/member/genealogy-tree?id=<%= rowMember.rightFoot.leftFoot._id %>" class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      <span class="name-s"><%= rowMember.rightFoot.leftFoot.memberId %></span>
+                                      <span class="desc-s"><%= rowMember.rightFoot.leftFoot.fullName %></span>
+                                    </div>
+                                  </div>
+                                </a>
+                              <% } else { %>
+                                <div class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      KOSONG
+                                    </div>
+                                  </div>
+                                </div>
+                              <% } %>
+
+                            </div>
+                            <div class="lev-3 fm sm">
+
+                              <% if (rowMember.rightFoot.middleFoot) { %>
+                                <a href="/member/genealogy-tree?id=<%= rowMember.rightFoot.middleFoot._id %>" class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      <span class="name-s"><%= rowMember.rightFoot.middleFoot.memberId %></span>
+                                      <span class="desc-s"><%= rowMember.rightFoot.middleFoot.fullName %></span>
+                                    </div>
+                                  </div>
+                                </a>
+                              <% } else { %>
+                                <div class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      KOSONG
+                                    </div>
+                                  </div>
+                                </div>
+                              <% } %>
+
+                            </div>
+                            <div class="lev-3 fr sm">
+
+                              <% if (rowMember.rightFoot.rightFoot) { %>
+                                <a href="/member/genealogy-tree?id=<%= rowMember.rightFoot.rightFoot._id %>" class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      <span class="name-s"><%= rowMember.rightFoot.rightFoot.memberId %></span>
+                                      <span class="desc-s"><%= rowMember.rightFoot.rightFoot.fullName %></span>
+                                    </div>
+                                  </div>
+                                </a>
+                              <% } else { %>
+                                <div class="box-user">
+                                  <div class="fig-user">
+                                    <div class="desc-user">
+                                      KOSONG
+                                    </div>
+                                  </div>
+                                </div>
+                              <% } %>
+
+                            </div>
+                          </div>
+                        <% } %>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../layouts/HeadLayout %>
+<body>
+  <% include ../../layouts/HeaderLayout %>
+
+  <div id="ContactSingleView">
+
+    <ui-splash :display="splash">Pesan telah terkirim, terima kasih</ui-splash>
+
+    <div class="wrap-banner single-slider">
+      <% rsBanner.forEach(row => { %>
+        <div>
+          <div class="banner-homepage">
+            <img src="<%= row.image_ %>" class="img-fluid" />
+
+            <% if (row.url) { %>
+              <div class="banner-caption">
+                <a href="<%= row.url %>" class="btn btn-secondary btn-red-border">
+                  Read More
+                </a>
+              </div>
+            <% } %>
+
+          </div>
+        </div>
+      <% }); %>
+    </div>
+    <br>&nbsp;
+
+    <section class="map">
+      <div id="map"></div>
+    </section>
+
+    <section class="contact">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="content-contact">
+              <div class="row">
+                <div class="col-sm-8 col-md-8 col-lg-8">
+                  <h1>Kirim Pesan</h1>
+
+                  <ui-alert :data-source="result.data"
+                  :display="result.state == 'invalid'"
+                  @close="result.state = ''">
+                    {{ result.message }}
+                  </ui-alert>
+
+                  <form @submit.prevent="send" class="form-contact">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label>Email</label>
+                          <input v-model="form.email" type="email" class="form-control" required>
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label>Nama</label>
+                          <input v-model="form.name" type="text" class="form-control" required>
+                        </div>
+                      </div>
+                      <div class="col-sm-12">
+                        <div class="form-group">
+                          <label>Subjek</label>
+                          <input v-model="form.subject" type="text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                          <textarea v-model="form.message" class="form-control" rows="3" required></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group text-right">
+                      <button type="submit" class="btn btn-secondary btn-red">
+                        <i v-if="loading" class="fa fa-spin fa-refresh"></i>
+                        Kirim
+                      </button>
+                    </div>
+                  </form>
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                  <div class="find-us">
+                    <h1>Hubungi Kami Kami</h1>
+                    <ul>
+                      <li>
+                        <i class="fa fa-phone"></i>
+                        <span>
+                          +62 (271) 679 2754
+                        </span>
+                      </li>
+                      <li>
+                        <i class="fa fa-envelope"></i>
+                        <span>
+                          <a href="mailto:info@cozmeed.id">info@cozmeed.id</a>
+                        </span>
+                      </li>
+                      <li>
+                        <i class="fa fa-map-marker"></i>
+                        <span>Jalan Slamet Riyadi 100, Solo</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var ContactSingleView = new Vue({
+      el: '#ContactSingleView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        session: {
+          email: '<%= session.email?session.email:"" %>',
+          authKey: '<%= session.authKey?session.authKey:"" %>',
+          type: 'member',
+        },
+
+        result: {
+          state: '',
+          message: '',
+          data: {},
+        },
+
+        form: {
+          email: '',
+          name: '',
+          subject: '',
+          message: '',
+        },
+
+        loading: false,
+        splash: false,
+      },
+
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted: function () {
+        var map;
+        $(document).ready(function(){
+          map = new GMaps({
+            el: '#map',
+            lat: -7.5707986,
+            lng: 110.82392,
+            disableDefaultUI: true,
+            scrollwheel: false
+          });
+          map.addMarker({
+            lat: -7.5707986,
+            lng: 110.82392,
+            title: 'Marker with InfoWindow',
+            infoWindow: {
+              content: '<p>Jalan Slamet Riyadi 100 Solo</p>'
+            }
+          });
+        });
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_send">
+        ******************/
+        send: function () {
+          this.loading = true;
+
+          var url = '/api/mailbox';
+          var data = this.form;
+
+          axios.post(url, data).then(function (response) {
+
+            if (response.data.state == 'success') {
+              this.splash = true;
+
+              setTimeout(function () {
+                this.splash = false;
+              }.bind(this), 2000);
+
+              this.form.email = '';
+              this.form.name = '';
+              this.form.subject = '';
+              this.form.message = '';
+            }
+
+            this.result = response.data;
+            this.loading = false;
+          }.bind(this));
+        },
+
+      },
+
+    });
+  </script>
+
+  <% include ../../layouts/FooterLayout %>
+  <% include ../../layouts/FootLayout %>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCd_rK9sHZLe1_4KOovoWHg1aydlOoYOGQ "></script>
+</body>
+</html>

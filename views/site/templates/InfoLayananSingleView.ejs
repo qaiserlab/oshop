@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../layouts/HeadLayout %>
+<body>
+  <% include ../../layouts/HeaderLayout %>
+
+  <div class="wrap-banner single-slider">
+    <% rsBanner.forEach(row => { %>
+      <div>
+        <div class="banner-homepage">
+          <img src="<%= row.image_ %>" class="img-fluid" />
+
+          <% if (row.url) { %>
+            <div class="banner-caption">
+              <a href="<%= row.url %>" class="btn btn-secondary btn-red-border">
+                Read More
+              </a>
+            </div>
+          <% } %>
+
+        </div>
+      </div>
+    <% }); %>
+  </div>
+
+  <section class="about-us">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <div class="wrap-nav-about-us">
+            <ul class="nav nav-pills nav-fill">
+
+              <% if (bottomMenu3.menu) { %>
+              <% Object.keys(bottomMenu3.menu).reverse().forEach(key => { var row = bottomMenu3.menu[key] %>
+                <li class="nav-item"><a class="nav-link" href="<%= row.permalink %>"><%= row.title %></a></li>
+              <% }); %>
+              <% } %>
+
+            </ul>
+          </div>
+        </div>
+
+        <% if (rowPage.featuredImage) { %>
+          <div class="col-sm-3 col-md-4 col-lg-3">
+            <div class="about-us-content">
+              <img src="<%= rowPage.featuredImage_ %>" />
+            </div>
+          </div>
+
+        <div class="col-sm-9 col-md-8 col-lg-9">
+
+        <% } else { %>
+
+        <div class="col-sm-12 col-md-12 col-lg-12">
+        <% } %>
+          <div class="about-us-content">
+            <h1><%= rowPage.title %></h1>
+            <%- rowPage.content %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <% include ../../layouts/FooterLayout %>
+  <% include ../../layouts/FootLayout %>
+</body>
+</html>

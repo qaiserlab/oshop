@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="LeadershipBonusView" class="about-us">
+    <div v-cloak class="container">
+
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title">Leadership Bonus</h1>
+
+            <div class="paper">
+
+              <ui-datepicker v-model="form.period" type="monthly" style="display: inline-block">Periode</ui-datepicker>
+              <ui-button :loading="loading" style="display: inline-block">Submit</ui-button>
+              <hr>
+
+              <table class="table" class="table-bordered">
+                <thead>
+                  <th>Level</th>
+                  <th>Total Omzet</th>
+                  <th>Group</th>
+                  <th>Bonus</th>
+                  <th>Tanggal</th>
+                </thead>
+                <tbody>
+
+                </tbody>
+              </table>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var LeadershipBonusView = new Vue({
+      el: '#LeadershipBonusView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        session: {
+          email: '<%= session.email?session.email:"" %>',
+          authKey: '<%= session.authKey?session.authKey:"" %>',
+          type: 'member',
+        },
+
+        result: {
+          state: '',
+          message: '',
+          data: {},
+        },
+
+        form: {
+          period: '',
+        },
+
+        loading: false,
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted: function () {
+        this.form.period = '<%= year + "-" + month + "-1" %>';
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_submit">
+        ******************/
+        submit: function () {
+          this.loading = true;
+
+          var period = this.form.period;
+          var xPeriod = period.split('-');
+
+          var year = xPeriod[0];
+          var month = xPeriod[1];
+
+          window.location = '/member/leadership-bonus/' + year + '/' + month;
+        },
+
+      },
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="InvoiceView" class="about-us">
+    <div v-cloak class="container">
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title">Invoice {{ form.code }}</h1>
+
+            <div class="paper">
+
+              <div class="invoice">
+
+                <div v-if="form.resi" class="row">
+                  <div class="col-md-3">
+                    No. Resi
+                  </div>
+                  <div class="col-md-9">
+                    <b>{{ form.resi }}</b>
+                  </div>
+                  <br>&nbsp;
+                </div>
+
+                <div class="row">
+                  <div class="col-md-3">
+                    Tanggal Order
+                  </div>
+                  <div class="col-md-3">
+                    <b>{{ form.orderDate_ }}</b>
+                  </div>
+
+                  <div class="col-md-6" style="text-align: right">
+                    <div class="badge badge-primary">{{ form.status }}</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    Tanggal Expired
+                  </div>
+                  <div class="col-md-3">
+                    <b>{{ form.dueDate_ }}</b>
+                  </div>
+
+                </div>
+
+                <br>
+
+                <div class="row">
+                  <div class="col-md-3">
+                    Member
+                  </div>
+                  <div class="col-md-9">
+                    <b>{{ form.memberId }} / {{ form.firstName }} {{ form.lastName }}</b>
+                  </div>
+                </div>
+
+                <br>
+
+                <div class="row">
+                  <div class="col-md-12">
+
+                    <table class="table">
+                      <thead>
+                        <th>Produk</th>
+                        <th>Deskripsi</th>
+                        <th>Harga</th>
+                        <th style="text-align: center">Qty</th>
+                        <th style="text-align: right">Sub Total</th>
+                      </thead>
+                      <tbody>
+
+                        <tr v-for="(row, i) in form.cart">
+                          <td>
+                            <div class="img">
+                              <img :src="'/writable/archives/' + row.featuredImage" style="width: 64px; height: 64px">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="color-size">
+                              <div class="product-name">
+                                <b>{{ row.productId }}</b> -
+                                <i class="fa fa-square"
+                                :style="{ color: row.selectedGroup.color }"></i>
+                                <span>{{ row.selectedGroup.size }}</span>
+                                <br>
+                                {{ row.productName }}
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="price">
+                              <div>{{ row.selectedGroup.price_ }}</div>
+                              <small>PV: {{ row.point }}</small>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="total" style="text-align: center">
+                              <span>{{ row.qty }}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="total" style="text-align: right">
+                              <div>{{ row.selectedGroup.subTotal_ }}</div>
+                              <small>PV: {{ row.qty * row.point }}</small>
+                            </div>
+                          </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-10" style="text-align: right">
+                    Total
+                  </div>
+                  <div class="col-md-2">
+                    <b>{{ total_ }}</b>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-10" style="text-align: right">
+                    Total PV
+                  </div>
+                  <div class="col-md-2">
+                    <b>{{ totalPv }}</b>
+                  </div>
+                </div>
+
+              </div>
+
+              <div v-if="buttonLabel && isStockiest" class="button-group">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="row" v-if="form.status == 'Processed'">
+                      <div class="col-md-2">
+                        No. Resi
+                      </div>
+                      <div class="col-md-10">
+                        <ui-textbox v-model="form.resi"></ui-textbox>
+                        <sup class="error-line" style="position: absolute; right: 16px; top: -16px">
+                          {{ result.data.errors.resi?result.data.errors.resi.message:'' }}
+                        </sup>
+                      </div>
+                    </div>
+
+                    <hr>
+                    <ui-button type="button"
+                    :loading="loading"
+                    @click="changeState">{{ buttonLabel }}</ui-button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var InvoiceView = new Vue({
+      el: '#InvoiceView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data() {
+        return {
+          loading: false,
+          result: {
+            state: '',
+            message: '',
+            data: { errors: {} },
+          },
+          isStockiest: <%= session.isStockiest %> || false,
+          form: <%- JSON.stringify(rowOrder) %> || {},
+          buttonLabel: '',
+        };
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+
+        /******************
+        <id="_total">
+        ******************/
+        total() {
+          let total = 0;
+
+          this.form.cart.forEach(row => {
+            console.log(row);
+            total += parseInt(row.selectedGroup.subTotal);
+          });
+
+          return total;
+        },
+
+        /******************
+        <id="_totalPv">
+        ******************/
+        totalPv() {
+          let total = 0;
+
+          this.form.cart.forEach(row => {
+            total += (row.qty * row.point);
+          });
+
+          return total;
+        },
+
+        /******************
+        <id="_total_">
+        ******************/
+        total_() {
+          let formattedTotal = 'Rp' +
+            this.total
+            .toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+
+          return formattedTotal;
+        },
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted() {
+        switch (this.form.status) {
+          case 'Pending':
+            // this.buttonLabel = 'Approve';
+            this.buttonLabel = 'Process';
+            break;
+          case 'Confirmed':
+            this.buttonLabel = 'Approve';
+            break;
+          case 'Paid':
+            this.buttonLabel = 'Process';
+            break;
+          case 'Processed':
+            this.buttonLabel = 'Deliver';
+        }
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_changeState">
+        ******************/
+        changeState() {
+          this.loading = true;
+
+          switch (this.form.status) {
+            case 'Pending':
+              // status = 'Paid';
+              status = 'Processed';
+              break;
+            case 'Confirmed':
+              status = 'Paid';
+              break;
+            case 'Paid':
+              status = 'Processed';
+            case 'Processed':
+              status = 'Delivered';
+          }
+
+          let url = '/api/order/change-state/' + this.form.code;
+          let data = { status };
+          if (this.form.resi) data.resi = this.form.resi;
+
+          axios.put(url, data).then(response => {
+
+            if (response.data.state == 'success')
+              window.location.reload();
+
+            this.result = response.data;
+            this.loading = false;
+          });
+        },
+      },
+
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

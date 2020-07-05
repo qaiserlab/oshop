@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="InvoiceView" class="about-us">
+    <div v-cloak class="container">
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title">Invoice {{ form.code }}</h1>
+
+            <div class="paper">
+
+              <div class="invoice">
+
+                <div class="row">
+                  <div class="col-md-3">
+                    Tanggal Order
+                  </div>
+                  <div class="col-md-3">
+                    <b>{{ form.orderDate_ }}</b>
+                  </div>
+
+                  <div class="col-md-6" style="text-align: right">
+                    <div class="badge badge-primary">{{ form.status }}</div>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    Tanggal Expired
+                  </div>
+                  <div class="col-md-3">
+                    <b>{{ form.dueDate_ }}</b>
+                  </div>
+
+                  <span v-if="form.resi" class="row">
+                    <div class="col-md-3" style="text-align: right">
+                      No. Resi
+                    </div>
+                    <div class="col-md-3">
+                      <b>{{ form.resi }}</b>
+                    </div>
+                  </span>
+                </div>
+
+                <br>
+
+                <div class="row">
+                  <div class="col-md-3">
+                    Member
+                  </div>
+                  <div class="col-md-9">
+                    <b>
+                      {{ form.memberId }} /
+                      {{ form.firstName || form.member.firstName }} {{ form.lastName || form.member.lastName }}
+                    </b>
+                  </div>
+                </div>
+
+                <div v-if="form.stockiestId" class="row">
+                  <div class="col-md-3">
+                    Stokist
+                  </div>
+                  <div class="col-md-9">
+                    <b>{{ form.stockiestId }} / {{ form.stockiest.fullName }}</b>
+                  </div>
+                </div>
+
+                <br>
+
+                <div class="row">
+                  <div class="col-md-12">
+
+                    <table class="table">
+                      <thead>
+                        <th>Produk</th>
+                        <th>Deskripsi</th>
+                        <th>Harga</th>
+                        <th style="text-align: center">Qty</th>
+                        <th style="text-align: right">Sub Total</th>
+                      </thead>
+                      <tbody>
+
+                        <tr v-for="(row, i) in rsCart">
+                          <td>
+                            <div class="img">
+                              <img :src="'/writable/archives/' + row.featuredImage" style="width: 64px; height: 64px">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="color-size">
+                              <div class="product-name">
+                                <b>{{ row.productId }}</b> -
+                                <i class="fa fa-square"
+                                :style="{ color: row.color }"></i>
+                                <span>{{ row.size }}</span>
+                                <br>
+                                {{ row.productName }}
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="price">
+                              <div>{{ row.price_ }}</div>
+                              <small>PV: {{ row.point }}</small>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="total" style="text-align: center">
+                              <span>{{ row.qty }}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="total" style="text-align: right">
+                              <div>{{ row.subTotal_ }}</div>
+                              <small>PV: {{ row.qty * row.point }}</small>
+                            </div>
+                          </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-10" style="text-align: right">
+                    Sub Total
+                  </div>
+                  <div class="col-md-2" style="text-align: right">
+                    <b>{{ total_ }}</b>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-10" style="text-align: right">
+                    Biaya Pengiriman
+                  </div>
+                  <div class="col-md-2" style="text-align: right">
+                    <b>{{ form.shipmentCost_ }}</b>
+                  </div>
+                </div>
+
+                <div v-if="form.uniqueCode" class="row">
+                  <div class="col-md-10" style="text-align: right">
+                    Kode Unik
+                  </div>
+                  <div class="col-md-2" style="text-align: right">
+                    <b>{{ form.uniqueCode }}</b>
+                  </div>
+                </div>
+
+                <br>
+                <div class="row">
+                  <div class="col-md-10" style="text-align: right">
+                    Total
+                  </div>
+                  <div class="col-md-2" style="text-align: right">
+                    <b>{{ form.total_ }}</b>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-10" style="text-align: right">
+                    Total PV
+                  </div>
+                  <div class="col-md-2" style="text-align: right">
+                    <b>{{ totalPv }}</b>
+                  </div>
+                </div>
+
+              </div>
+
+              <div v-if="buttonLabel && isStockiest" class="button-group">
+                <div class="row">
+                  <div class="col-md-12">
+                    <hr>
+                    <ui-button type="button"
+                    :loading="loading"
+                    @click="changeState">{{ buttonLabel }}</ui-button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var InvoiceView = new Vue({
+      el: '#InvoiceView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data() {
+        return {
+          isStockiest: <%= session.isStockiest %> || false,
+          form: <%- JSON.stringify(rowOrder) %> || {},
+          buttonLabel: '',
+        };
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+
+        /******************
+        <id="_rsCart">
+        ******************/
+        rsCart() {
+          return this.form.cart.map(row => {
+            if (row.selectedGroup) {
+              row.color = row.selectedGroup.color;
+              row.size = row.selectedGroup.size;
+              row.price = row.selectedGroup.price;
+            }
+            row.price_ = 'Rp' +
+            row.price
+            .toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+
+            row.subTotal = row.price * row.qty;
+            row.subTotal_ = 'Rp' +
+              row.subTotal
+              .toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+
+            return row;
+          });
+        },
+
+        /******************
+        <id="_total">
+        ******************/
+        total() {
+          let total = 0;
+
+          this.rsCart.forEach(row => {
+            total += parseInt(row.subTotal);
+          });
+
+          return total;
+        },
+
+        /******************
+        <id="_totalPv">
+        ******************/
+        totalPv() {
+          let total = 0;
+
+          this.form.cart.forEach(row => {
+            total += (row.qty * row.point);
+          });
+
+          return total;
+        },
+
+        /******************
+        <id="_total_">
+        ******************/
+        total_() {
+          let formattedTotal = 'Rp' +
+            this.total
+            .toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+
+          return formattedTotal;
+        },
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted() {
+        switch (this.form.status) {
+          case 'Pending':
+            // this.buttonLabel = 'Approve';
+            this.buttonLabel = 'Process';
+            break;
+          case 'Confirmed':
+            this.buttonLabel = 'Approve';
+            break;
+          case 'Paid':
+            this.buttonLabel = 'Process';
+        }
+      },
+
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

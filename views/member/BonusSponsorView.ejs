@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="BonusSponsorView" class="about-us">
+    <div v-cloak class="container">
+
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title">Bonus Sponsor</h1>
+
+            <div class="paper">
+
+              <ui-datepicker v-model="form.period" type="monthly" style="display: inline-block">Periode</ui-datepicker>
+              <ui-button @click="submit" :loading="loading" style="display: inline-block">Submit</ui-button>
+              <hr>
+
+              <table class="table" class="table-bordered">
+                <thead>
+                  <th>ID Member yg Disponsori</th>
+                  <th>Nama</th>
+                  <th>Tanggal</th>
+                  <th>Bonus</th>
+                </thead>
+                <tbody>
+
+                  <% rsBonusSponsor.forEach(row => { %>
+                    <tr>
+                      <td><%= row.fromId %></td>
+                      <td><%= row.fromName %></td>
+                      <td><%= row.date_ %></td>
+                      <td><%= row.bonus_ %></td>
+                    </tr>
+                  <% }); %>
+
+                </tbody>
+              </table>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var BonusSponsorView = new Vue({
+      el: '#BonusSponsorView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        session: {
+          email: '<%= session.email?session.email:"" %>',
+          authKey: '<%= session.authKey?session.authKey:"" %>',
+          type: 'member',
+        },
+        rsBonusSponsor: <%- JSON.stringify(rsBonusSponsor) %>,
+
+        result: {
+          state: '',
+          message: '',
+          data: {},
+        },
+
+        form: {
+          period: '',
+        },
+
+        loading: false,
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted: function () {
+        this.form.period = '<%= year + "-" + month + "-1" %>';
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_submit">
+        ******************/
+        submit: function () {
+          this.loading = true;
+
+          var period = this.form.period;
+          var xPeriod = period.split('-');
+
+          var year = xPeriod[0];
+          var month = xPeriod[1];
+
+          window.location = '/member/bonus-sponsor/' + year + '/' + month;
+        },
+
+      },
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

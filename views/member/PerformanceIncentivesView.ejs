@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="IncentivePerformanceView" class="about-us">
+    <div v-cloak class="container">
+
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title">Performance Incentives 10%</h1>
+
+            <div class="paper">
+
+              <ui-datepicker v-model="form.period" type="yearly" style="display: inline-block"></ui-datepicker>
+              <ui-button @click="submit" :loading="loading" style="display: inline-block">Submit</ui-button>
+              <hr>
+
+              <table class="table" class="table-bordered">
+                <thead>
+                  <th>Bulan</th>
+                  <th>ID Member yg Disponsori</th>
+                  <th>Nama</th>
+                  <th>Insentif</th>
+                </thead>
+                <tbody>
+
+                  <% rsIncentivePerformance.forEach(row => { %>
+                    <tr>
+                      <td><%= row.monthName %></td>
+                      <td><%= row.fromId %></td>
+                      <td><%= row.fromName %></td>
+                      <td><%= row.incentive_ %></td>
+                    </tr>
+                  <% }); %>
+
+                  <tr>
+                    <th style="text-align: right" colspan="3">Total</th>
+                    <th style="text-align: left">{{ total_ }}</th>
+                  </tr>
+
+                </tbody>
+              </table>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var IncentivePerformanceView = new Vue({
+      el: '#IncentivePerformanceView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        session: {
+          email: '<%= session.email?session.email:"" %>',
+          authKey: '<%= session.authKey?session.authKey:"" %>',
+          type: 'member',
+        },
+        rsIncentivePerformance: <%- JSON.stringify(rsIncentivePerformance) %>,
+
+        result: {
+          state: '',
+          message: '',
+          data: {},
+        },
+
+        form: {
+          period: '',
+        },
+
+        loading: false,
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+        total() {
+          var total = 0;
+          for (row of this.rsIncentivePerformance) {
+            total += row.incentive;
+          }
+          return total;
+        },
+
+        total_() {
+          let formattedTotal = 'Rp' +
+            this.total
+            .toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+
+          return formattedTotal;
+        },
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted: function () {
+        this.form.period = '<%= year + "-" + month + "-1" %>';
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_submit">
+        ******************/
+        submit: function () {
+          this.loading = true;
+
+          var period = this.form.period;
+          var xPeriod = period.split('-');
+
+          var year = xPeriod[0];
+          var month = xPeriod[1];
+
+          window.location = '/member/performance-incentives/' + year;
+        },
+
+      },
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

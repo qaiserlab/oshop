@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <nav id="breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/"><i class="fa fa-home"></i></a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/shop">Belanja</a>
+        </li>
+        <li class="breadcrumb-item active">
+          Keranjang Belanja
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <section id="CartView" class="cart">
+    <div v-cloak>
+
+      <ui-modal @close="alertDialog = false"
+      :display="alertDialog"
+      title="Alert"
+      icon="warning">
+        <div slot="message">
+          {{ alertMessage }}
+        </div>
+        <div slot="buttonbar">
+          <ui-button @click="alertDialog = false">OK</ui-button>
+        </div>
+      </ui-modal>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="wrap-nav-cart">
+              <ul class="nav nav-pills nav-fill">
+                <li class="nav-item">
+                  <a class="nav-link active" href="javascript:">Keranjang Belanja</a>
+                </li>
+                <li class="nav-item"> <a class="nav-link" href="javascript:">Info Lengkap</a></li>
+                <li class="nav-item"> <a class="nav-link" href="javascript:">Pembayaran</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="table-cart">
+              <table class="table table-responsive">
+                <tbody>
+
+                  <tr v-for="row in cart">
+                    <td>
+                      <div class="img">
+                        <img :src="'/writable/archives/' + row.featuredImage">
+                      </div>
+                      <div class="product-name">
+                        <small>
+                        {{ row.productId }} /
+                        {{ row.productName }}</small>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="color-size">
+                        <span>
+                          Color/Size:<br>
+                          <i class="fa fa-square"
+                          :style="{ color: row.selectedGroup.color }"></i>
+                          <small>{{ row.selectedGroup.size }}</small>
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="price">
+                        <span>Harga</span>
+                        <div style="color: red">{{ row.selectedGroup.price_ }}</div>
+                        <small>PV: {{ row.point }}</small>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="total">
+                        <span>Qty</span>
+                        <ui-textbox v-model="row.qty" only-numeric required></ui-textbox>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="total">
+                        <span>Sub Total</span>
+                        <div style="color: red">{{ subTotal_(row.selectedGroup.price, row.qty) }}</div>
+                        <small>PV: {{ row.qty * row.point }}</small>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="action">
+                        <a @click="deleteData(row._id, row.selectedGroup.color, row.selectedGroup.size)"
+                        href="javascript:"
+                        class="btn btn-secondary btn-delete">Hapus</a>
+                      </div>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- <div class="col-sm-3 col-md-3 col-lg-3">
+            <div class="link-bottom-cart">
+              <a href="#">Back to Shopping</a>
+              <a href="#">Delete All</a>
+            </div>
+          </div> -->
+          <div class="col-sm-9 col-md-9 col-lg-9">
+            <div class="action-bottom-cart">
+              <div class="row">
+                <div class="col-sm-6">
+                  <form>
+                    <label>Masukan Voucher Belanja</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" placeholder="Kode Voucher…">
+                      <span class="input-group-btn">
+                        <button class="btn btn-secondary btn-red-border" type="button">Submit</button>
+                      </span>
+                    </div>
+                  </form>
+                </div>
+                <div class="col-sm-6">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <div class="total">
+                        <div class="form-group">
+                          <label>Total</label>
+                          <div style="color: red">{{ total }}</div>
+                          <small>Total PV: {{ totalPv }}</small>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="total">
+                        <a v-if="cart.length > 0"
+                        @click="checkout"
+                        href="javascript:"
+                        class="btn btn-secondary btn-red btn-block">
+                          <i v-if="loading" class="fa fa-spin fa-refresh"></i>
+                          Next
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    var CartView = new Vue({
+      el: '#CartView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data() {
+
+        return {
+          session: {
+            email: '<%= session.email?session.email:"" %>',
+            authKey: '<%= session.authKey?session.authKey:"" %>',
+            type: 'member',
+          },
+          cart: <%- JSON.stringify(session.cart) %>,
+
+          result: {
+            state: '',
+            message: '',
+            data: {},
+          },
+
+          loading: false,
+          alertDialog: false,
+          alertMessage: '',
+
+        };
+
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+
+        /******************
+        <id="_total">
+        ******************/
+        total() {
+          var total = 0;
+
+          this.cart.forEach(function (row) {
+            total += this.subTotal(row.selectedGroup.price, row.qty);
+          }.bind(this));
+
+          var formattedTotal = 'Rp' +
+            total.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+
+          return formattedTotal;
+        },
+
+        /******************
+        <id="_totalPv">
+        ******************/
+        totalPv() {
+          let total = 0;
+
+          this.cart.forEach(row => {
+            total += (row.qty * row.point);
+          });
+
+          return total;
+        },
+
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted() {
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_subTotal">
+        ******************/
+        subTotal(price, qty) {
+          var subTotal = price * qty;
+          return subTotal;
+        },
+
+        /******************
+        <id="_subTotal_">
+        ******************/
+        subTotal_(price, qty) {
+          var formattedSubTotal = 'Rp' +
+            this.subTotal(price, qty)
+            .toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+
+          return formattedSubTotal;
+        },
+
+        /******************
+        <id="_deleteData">
+        ******************/
+        deleteData(id, color, size) {
+          this.loading = true;
+
+          color = encodeURIComponent(color);
+          var url = '/api/cart/' + id + '/' + color + '/' + size;
+
+          axios.delete(url).then(function (response) {
+
+            if (response.data.state == 'success') {
+              this.cart = response.data.data;
+              HeaderLayout.refreshCart(this.cart);
+            }
+
+            this.loading = false;
+          }.bind(this));
+        },
+
+        /******************
+        <id="_checkout">
+        ******************/
+        checkout() {
+
+          if (this.session.authKey) {
+
+            var isZero = this.cart.some(row => {
+              console.log(row.qty);
+              return !row.qty || row.qty <= 0;
+            });
+
+            if (isZero) {
+
+              this.alertMessage = 'Qty tidak boleh ada yg kosong/0';
+              this.alertDialog = true;
+              return;
+            }
+
+            this.loading = true;
+
+            var url = '/api/cart';
+            var data = this.cart;
+
+            axios.patch(url, data).then(function (response) {
+
+              if (response.data.state == 'success')
+              window.location = '/shop/cart/checkout';
+
+              this.loading = false;
+            }.bind(this));
+          }
+          else {
+            HeaderLayout.showLogin(true);
+          }
+
+        },
+
+      },
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

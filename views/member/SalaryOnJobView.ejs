@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="SalaryOnJobView" class="about-us">
+    <div v-cloak class="container">
+
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title">Salary On Job</h1>
+
+            <div class="paper">
+
+              <ui-datepicker v-model="form.period" 
+              type="yearly" 
+              style="display: inline-block"></ui-datepicker>
+              <ui-button @click="submit" :loading="loading" style="display: inline-block">Submit</ui-button>
+              <hr>
+
+              <table class="table" class="table-bordered">
+                <thead>
+                  <th>Bulan</th>
+                  <th>Gaji</th>
+                </thead>
+                <tbody>
+
+                  <% rsSalary.forEach(row => { %>
+                    <tr>
+                      <td><%= row.monthName %></td>
+                      <td><%= row.salary_ %></td>
+                    </tr>
+                  <% }); %>
+
+                  <tr>
+                    <th style="text-align: right">Total</th>
+                    <th style="text-align: left">{{ total_ }}</th>
+                  </tr>
+
+                </tbody>
+              </table>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var SalaryOnJobView = new Vue({
+      el: '#SalaryOnJobView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        session: {
+          email: '<%= session.email?session.email:"" %>',
+          authKey: '<%= session.authKey?session.authKey:"" %>',
+          type: 'member',
+        },
+        rsSalary: <%- JSON.stringify(rsSalary) %>,
+
+        result: {
+          state: '',
+          message: '',
+          data: {},
+        },
+
+        form: {
+          period: '',
+        },
+
+        loading: false,
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+        total() {
+          var total = 0;
+          for (row of this.rsSalary) {
+            total += row.salary;
+          }
+          return total;
+        },
+
+        total_() {
+          let formattedTotal = 'Rp' +
+            this.total
+            .toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+
+          return formattedTotal;
+        },
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted: function () {
+        this.form.period = '<%= year + "-" + month + "-1" %>';
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_submit">
+        ******************/
+        submit: function () {
+          this.loading = true;
+
+          var period = this.form.period;
+          var xPeriod = period.split('-');
+
+          var year = xPeriod[0];
+          var month = xPeriod[1];
+
+          window.location = '/member/salary-on-job/' + year;
+        },
+
+      },
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <!-- Content here -->
+
+  <section class="about-us">
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title">Stok PIN</h1>
+
+            <p>
+              Tersedia: <%= rsPin.length %> PIN
+            </p>
+            <div class="paper">
+              <table class="table" class="table-bordered">
+                <thead>
+                  <%# <th>Serial Number</th>%>
+                  <th>PIN</th>
+                  <th style="text-align: right">Aksi</th>
+                </thead>
+                <tbody>
+
+                  <% rsPin.forEach(row => { %>
+                    <tr>
+                      <td><%= row.pin %></td>
+                      <td style="text-align: right">
+                        <a href="/member/register?id=<%= row._id %>">Register</a>
+                      </td>
+                    </tr>
+                  <% }); %>
+
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

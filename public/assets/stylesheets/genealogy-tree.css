@@ -1,0 +1,234 @@
+.fig-user img {
+   height: 100%;
+   position: absolute;
+   z-index: 1010;
+   top: 0;
+   left: 0;
+}
+.box-user .active {
+   background-color: #0e6ba6 !important;
+}
+.box-user .inactive {
+   /*background-color: #f2b1b4 !important;*/
+   background-color: #F5021B !important;
+}
+.desc-user .desc-s {
+   font-style: normal;
+   font-weight: 400;
+   color: #fff;
+   font-size: 11px;
+   margin: 0;
+   display: block;
+}
+.desc-user .name-s {
+   font-style: normal;
+   font-weight: 800;
+   color: #fff;
+   font-size: 10px;
+   margin: 2px 0;
+   display: block;
+}
+.desc-user .name-s a {
+   color: #fff;
+}
+.desc-user .tree-s {
+   font-style: normal;
+   font-weight: normal;
+   color: #727272;
+   font-size: 7px;
+   margin: 2px 0;
+   display: block;
+}
+.desc-user a {
+   display: block;
+}
+
+.vLine {
+   display: block;
+   margin: 0;
+   width: auto;
+   height: 30px;
+   clear: both;
+   position: relative;
+}
+
+.vLine:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  border-left: 1px solid #dadada;
+}
+
+.hLine {
+   width: 71%;
+   background: url(../images/dotj.jpg) repeat-y center center;
+   display: block;
+   margin: 0 auto;
+   border-width: 1px 1px 0 1px;
+   border-style: solid;
+   border-color: #dadada;
+   height: 30px;
+   clear: both;
+   position: relative;
+}
+
+.hLine:before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  right: 0;
+  margin: auto;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  border-left: 1px solid #dadada;
+}
+
+.revolution-slider {
+   height: 387px !important;
+}
+
+
+#tree-diagram {
+   width: 100%;
+   padding: 0;
+   margin: 0 0 30px 0;
+   text-align: center;
+}
+#tree-diagram .treewrap {
+   width: 100%;
+   display: block;
+   padding: 0;
+   margin: 0;
+}
+#tree-diagram .lev-1 {
+   width: 100%;
+}
+#tree-diagram .lev-2, #tree-diagram .lev-3, #tree-diagram .lev-4 {
+   width: 29%;
+}
+#tree-diagram .box-user {
+   width: auto;
+   display: inline-block;
+   margin: 0 auto;
+   background-color: #7db842 !important;
+}
+#tree-diagram .box-user a {
+   color: #fff;
+   font-size: 12px;
+}
+.box-user .fig-user {
+   min-height: 45px;
+   display: block;
+   margin: 0;
+   position: relative;
+   z-index: 1000;
+   overflow: hidden;
+   padding: 10px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+@media screen and (min-width: 42em) {
+  .box-user .fig-user {
+      min-width: 180px;
+      min-height: 90px;
+  }
+}
+
+.box-user .fig-user.sm {
+  width: 100px;
+}
+
+
+.fig-user img {
+   height: 100%;
+   position: absolute;
+   z-index: 1010;
+   top: 0;
+   left: 0;
+}
+.box-user .active {
+   background-color: #0e6ba6 !important;
+}
+.box-user .inactive {
+   /*background-color: #f2b1b4 !important;*/
+   background-color: #F5021B !important;
+}
+.desc-user {
+   text-align: center;
+}
+.desc-user .desc-s {
+   font-style: normal;
+   font-weight: 400;
+   color: #fff;
+   font-size: 11px;
+   margin: 0;
+   display: block;
+}
+.desc-user .name-s {
+   font-style: normal;
+   font-weight: 800;
+   color: #fff;
+   font-size: 10px;
+   margin: 2px 0;
+   display: block;
+}
+.desc-user .name-s a {
+   color: #fff;
+}
+.desc-user .tree-s {
+   font-style: normal;
+   font-weight: normal;
+   color: #727272;
+   font-size: 7px;
+   margin: 2px 0;
+   display: block;
+}
+.desc-user a {
+   display: block;
+}
+.fl {
+   float: left;
+}
+.fm {
+   float: left;
+   margin: 0 0 0 6.6%
+}
+.fr {
+   float: right;
+}
+.cl {
+   clear: both;
+   display: block;
+   height: 0;
+}
+
+#tree-diagram .treewrap .lev-3.sm {
+  width: 33%;
+  margin: 0 5px;
+}
+
+#tree-diagram .treewrap.flex .box-user {
+  display: block;
+  color: white;
+  font-size: 12px;
+}
+
+#tree-diagram .treewrap.flex .box-user .fig-user {
+  width: auto;
+  min-width: auto;
+  min-height: 70px;
+}
+
+#tree-diagram .treewrap.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

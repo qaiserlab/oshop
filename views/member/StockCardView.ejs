@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="StockCardView" class="about-us">
+    <div v-cloak class="container">
+
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title">Riwayat Stok</h1>
+
+            <div class="paper">
+
+              <form @submit.prevent="generateReport" method="get">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div style="display: inline-block">
+                      <ui-datepicker name="from" v-model="form.from"></ui-datepicker>
+                    </div>
+                    <div style="display: inline-block">
+                      <ui-datepicker name="to" v-model="form.to">s/d</ui-datepicker>
+                    </div>
+                    <div style="float: right">
+                      <ui-button type="submit" icon="bolt"></ui-button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <ui-select v-model="productId"
+                  placeholder="-------- Filter Per Produk --------"
+                  :data-source="dsStock"
+                  data-field="product_"
+                  data-value="productId"></ui-select>
+                </div>
+              </div>
+              <br>
+
+              <div class="row">
+                <div class="col-md-12">
+
+                  <table class="table">
+
+                    <tbody v-for="rowStock in rsStock_">
+                    <tr>
+                      <th colspan="4">
+                        {{ rowStock.productId }} / {{ rowStock.productName }}
+
+                        <div style="float: right">
+                          <i class="fa fa-square" :style="'color: ' + rowStock.color"></i>
+                          / {{ rowStock.size }}
+                        </div>
+                      </th>
+                    </tr>
+
+                    <tr>
+                      <td colspan="4">
+
+                        <table class="table">
+                          <thead>
+                            <th>Tanggal</th>
+                            <th>Keterangan</th>
+                            <th style="text-align: center">Masuk</th>
+                            <th style="text-align: center">Keluar</th>
+                            <!-- <th style="text-align: center">Sisa</th> -->
+                          </thead>
+                          <tbody>
+                            <tr v-for="row in rowStock.rs">
+                              <td>{{ row.date_ }}</td>
+                              <td>
+                                {{ row.description }}
+                              </td>
+                              <td style="text-align: center; vertical-align: middle">{{ row.in }}</td>
+                              <td style="text-align: center; vertical-align: middle">{{ row.out }}</td>
+                              <!-- <td style="text-align: center; vertical-align: middle">{{ row.in - row.out }}</td> -->
+                            </tr>
+                          </tbody>
+                        </table>
+
+                      </td>
+                    </tr>
+                    </tbody>
+
+                  </table>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var StockCardView = new Vue({
+      el: '#StockCardView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        rsStock: <%- JSON.stringify(rsStock) %> || {},
+        productId: '',
+
+        form: {
+          from: '<%= from_ %>',
+          to: '<%= to_ %>',
+        },
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+
+        /******************
+        <id="_dsStock">
+        ******************/
+        dsStock() {
+          let rsStock = {};
+
+          Object.keys(this.rsStock).forEach(key => {
+            rsStock[key] = this.rsStock[key];
+            rsStock[key].product_ =
+            rsStock[key].productId + ' / ' + rsStock[key].productName;
+          });
+
+          return rsStock;
+        },
+
+        /******************
+        <id="_rsStock_">
+        ******************/
+        rsStock_() {
+          if (this.productId) {
+            let rsStock = {};
+
+            Object.keys(this.rsStock).forEach(key => {
+              if (this.rsStock[key].productId == this.productId)
+              rsStock[key] = this.rsStock[key];
+            });
+
+            return rsStock;
+          }
+          else return this.rsStock;
+        },
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_generateReport">
+        ******************/
+        generateReport() {
+          window.location = '/member/stock-card?' + $.param(this.form);
+        },
+
+      },
+
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

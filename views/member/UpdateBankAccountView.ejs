@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="UpdateBankAccountView" class="about-us">
+    <div v-cloak class="container">
+
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title">Ubah Rekening</h1>
+
+            <div class="paper">
+
+              <ui-alert :data-source="result.data"
+              :display="result.state == 'invalid'"
+              @close="result.state = ''">
+                {{ result.message }}
+              </ui-alert>
+
+              <div class="row form-table">
+
+                <div class="col-md-6">
+                  <ui-textbox v-model="form.password"
+                  type="password">Password</ui-textbox>
+                </div>
+                <div class="col-md-6">
+                  <ui-textbox v-model="form.retypePassword"
+                  type="password">Ulangi Password</ui-textbox>
+                </div>
+              </div>
+
+              <hr>
+
+              <div class="row form-table">
+                <div class="col-md-6">
+                  <ui-select v-model="form.bank"
+                  :data-source="rsBank"
+                  data-field="bank"
+                  data-value="bank"
+                  placeholder="------ Pilih Bank ------">Bank</ui-select>
+
+                </div>
+                <div class="col-md-6">
+                  <ui-textbox v-model="form.accountName">Nama Pemilik Rekening</ui-textbox>
+                </div>
+
+                <div class="col-md-12">
+                  <ui-textbox v-model="form.accountNumber">No. Rekening</ui-textbox>
+                </div>
+
+              </div>
+
+              <div class="button-group">
+                <div class="row">
+                  <div class="col-md-12">
+                    <ui-button href="/member/profile" bs-type="danger">Kembali</ui-button>
+                    <ui-button @click="submit" :loading="loading">Simpan</ui-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var UpdateBankAccountView = new Vue({
+      el: '#UpdateBankAccountView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        session: {
+          memberId: '<%= session.memberId?session.memberId:"" %>',
+          email: '<%= session.email?session.email:"" %>',
+          authKey: '<%= session.authKey?session.authKey:"" %>',
+          type: 'member',
+        },
+
+        result: {
+          state: '',
+          message: '',
+          data: {},
+        },
+
+        loading: false,
+        rowMember: <%- JSON.stringify(rowMember) %> || {},
+        rsBank: <%- JSON.stringify(rsBank) %> || [],
+
+        form: {
+          password: '',
+          retypePassword: '',
+          bank: '',
+          accountNumber: '',
+          accountName: '',
+        },
+
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted: function () {
+        this.form.bank = this.rowMember.bank;
+        this.form.accountNumber = this.rowMember.accountNumber;
+        this.form.accountName = this.rowMember.accountName;
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_submit">
+        ******************/
+        submit: function () {
+          this.loading = true;
+
+          var url = '/api/account/update-bank-account';
+          var data = this.form;
+
+          axios.put(url, data).then(function (response) {
+
+            if (response.data.state == 'success')
+              window.location = '/member/profile';
+
+            this.result = response.data;
+            this.loading = false;
+          }.bind(this));
+        },
+
+      },
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

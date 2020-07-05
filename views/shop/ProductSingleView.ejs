@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <nav id="breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/"><i class="fa fa-home"></i></a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/shop">Belanja</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/shop/<%= categorySlug %>"><%= rowProduct.productCategory.title %></a>
+        </li>
+        <li class="breadcrumb-item active"><%= rowProduct.productName %></li>
+      </ol>
+    </div>
+  </nav>
+
+  <div id="ProductSingleView">
+    <div v-cloak>
+      <ui-modal @close="alertDialog = false"
+      :display="alertDialog"
+      title="Alert"
+      icon="warning">
+        <div slot="message">
+          {{ alertMessage }}
+        </div>
+        <div slot="buttonbar">
+          <ui-button @click="alertDialog = false">OK</ui-button>
+        </div>
+      </ui-modal>
+
+      <section class="product-detail">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-4 col-md-4">
+              <div class="product-img">
+                <div class="slider-for">
+
+                  <div>
+                    <div class="img-product-large">
+                      <img src="<%= rowProduct.featuredImage_ %>">
+                    </div>
+                  </div>
+
+                  <% rowProduct.images_.forEach(image => { %>
+                    <div>
+                      <div class="img-product-large">
+                        <img src="<%= image %>">
+                      </div>
+                    </div>
+                  <% }); %>
+
+                </div>
+                <div class="slider-nav">
+
+                  <div style="cursor: pointer">
+                    <div class="img-product-large">
+                      <img src="<%= rowProduct.featuredImage_ %>">
+                    </div>
+                  </div>
+
+                  <% rowProduct.images_.forEach(image => { %>
+                    <div style="cursor: pointer">
+                      <div class="img-product-large">
+                        <img src="<%= image %>">
+                      </div>
+                    </div>
+                  <% }); %>
+
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-8 col-md-8">
+              <div id="ProductDesc" class="product-desc">
+
+                <h1><%= rowProduct.productName %></h1>
+                <h4>ID Produk: <%= rowProduct.productId %> | PV: <%= rowProduct.point %></h4>
+                <span class="price"
+                v-html="rowSizeActive.price_">
+                  <%= rowProduct.price_ %>
+                </span>
+                <!--
+                  <span class="badge-dark-red">New</span>
+                  <ul class="rating">
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li class="score-rating">(0)</li>
+                  </ul>
+                -->
+                <ul class="change-color">
+                  <span>Warna</span>
+
+                  <li v-for="(row, color) in priceGroup">
+                    <a @click="setColorActive(color)" href="javascript:">
+                      <span class="circle-color"
+                      :style="{ background: color, border: (color == colorActive?'solid black 2px':'none')}"></span>
+                    </a>
+                  </li>
+
+                </ul>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <ul class="size">
+                      <span>Ukuran</span>
+
+                      <li v-for="row in rowColorActive" class="active">
+                        <a @click="setSizeActive(row.size)"
+                        :style="(row.size == sizeActive?'color: red; border: solid red 1px':'')"
+                        href="javascript:">{{ row.size }}</a>
+                      </li>
+
+                    </ul>
+                  </div>
+                  <div class="col-sm-4">
+                    <form class="qty">
+                      <div class="form-group">
+                        <ui-textbox v-model="form.qty" only-numeric>Qty</ui-textbox>
+                      </div>
+
+                      <div class="stocks">
+                        <span class="label-stock">Stok Tersedia:</span>
+                        <span class="label-items">{{ rowSizeActive.quantity }}</span>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="col-sm-4">
+                    <span>Berat</span><br>
+                    <b><%= rowProduct.weight %> Gram</b>
+                  </div>
+                </div>
+
+                <div class="btn-product-detail">
+                  <a @click="buy"
+                  href="javascript:"
+                  class="btn btn-secondary btn-red-border"
+                  style="display: none">Buy</a>
+                  <a @click="addToCart"
+                  href="javascript:"
+                  class="btn btn-secondary btn-red">
+                    <i v-if="loading" class="fa fa-spin fa-refresh"></i>
+                    Add to Cart
+                  </a>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="product-desc-all">
+        <div class="container">
+          <div class="row">
+
+            <div class="col-md-9 details">
+              <h4>Description</h4>
+              <p><%- rowProduct.description %></p>
+            </div>
+            <div class="col-md-3 details">
+              <h4>Overview</h4>
+              <%- rowProduct.overview %>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="separated"></div>
+            </div>
+
+            <div class="col-md-12 details">
+              <h4>Size Guide</h4>
+              <%- rowProduct.sizeGuide %>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="suggestion-product">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <div class="row">
+                <div class="col-sm-2 col-md-3">
+                  <h1>Product Suggestion</h1>
+                </div>
+                <div class="col-sm-2">
+                  <div class="wrap-vertical-align">
+                    <div class="vertical-align vertical-bottom">
+                      <div class="product-button">
+                        <button class="btn-prev-product-new"><i class="icon arrow-left"></i></button>
+                        <button class="btn-next-product-new"><i class="icon arrow-right"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="product-new">
+
+                <% rsProductSuggestion.forEach(row => { %>
+                  <div>
+                    <div class="product-thumb">
+                      <a href="<%= row.permalink %>">
+                        <img src="<%= row.featuredImage_ %>">
+                      </a>
+                    </div>
+                    <!--
+                    <span class="badge-dark-red">New</span>
+                    <ul class="rating">
+                      <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                      <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                      <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                      <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                      <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                      <li class="score-rating">(0)</li>
+                    </ul>
+                    -->
+                    <div class="product-name">
+                      <a href="<%= row.permalink %>">
+                        <%= row.productName %>
+                      </a>
+                    </div>
+                    <div class="price"><%= row.price_ %></div>
+                  </div>
+                <% }); %>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section style="display: none" class="review-ratings">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-2 col-md-2 col-sm-2">
+              <h1>
+                Review <br>
+                And Ratings
+              </h1>
+            </div>
+            <div class="col-sm-10 col-md-10 col-sm-10">
+              <div class="write-review">
+                <span class="review-number">5</span>
+                <ul class="rating">
+                  <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  <span class="people-review">{{ rsReview.length }} Orang mengulas <br> produk ini</span>
+                </ul>
+
+                <% if (session.authKey) { %>
+                  <span class="btn-write-review">
+                    <a href="javascript:"
+                    @click="openReview"
+                    class="btn btn-secondary btn-red">
+                      Write Your Review
+                    </a>
+                  </span>
+
+                  <ui-modal @close="closeReview"
+                  :display="reviewDialog"
+                  title="Write Review"
+                  icon="paper-plane">
+                    <div slot="message">
+
+                      <ui-alert :data-source="reviewResult.data"
+                      :display="reviewResult.state == 'invalid'"
+                      @close="reviewResult.state = ''">
+                        {{ result.message }}
+                      </ui-alert>
+
+                      <div class="form-group">
+                        <label>Review</label>
+                        <ui-textarea v-model="formReview.review"></ui-textarea>
+                      </div>
+                    </div>
+                    <div slot="buttonbar">
+                      <ui-button :loading="reviewLoading" @click="submitReview">Submit</ui-button>
+                      <ui-button @click="closeReview" bs-type="danger">Cancel</ui-button>
+                    </div>
+                  </ui-modal>
+                <% } %>
+
+              </div>
+              <div class="wrap-circle-review">
+                <div class="top review circle">
+                  <strong></strong>
+                  <ul class="rating">
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  </ul>
+                </div>
+                <div class="review middle circle">
+                  <strong></strong>
+                  <ul class="rating">
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  </ul>
+                </div>
+                <div class="review less circle">
+                  <strong></strong>
+                  <ul class="rating">
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  </ul>
+                </div>
+                <div class="review less circle">
+                  <strong></strong>
+                  <ul class="rating">
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  </ul>
+                </div>
+                <div class="review no-review circle">
+                  <strong></strong>
+                  <ul class="rating">
+                    <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+
+
+
+              <div class="review-customer">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="name-customer">
+                      <span>By <strong>Dhany Devito</strong></span>
+                      <span>from Tulungagung</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-8">
+                    <div class="rating-customer">
+                      <ul class="rating">
+                        <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                        <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                        <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                        <li><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                        <li class="empty-rating"><a href="#"><i class="fa fa-star" aria-hidden="true"></i></a></li>
+                      </ul>
+                      <div class="customer-feedback">
+                        <h5>Recommended Jacket</h5>
+                        <p>
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <ui-splash :display="splash">
+        {{ result.message }}
+      </ui-splash>
+    </div>
+  </div>
+
+  <script>
+
+    /******************
+    <id="Vue">
+    ******************/
+    var ProductSingleView = new Vue({
+      el: '#ProductSingleView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: function () {
+        var rowProduct = <%- JSON.stringify(rowProduct) %>;
+        rowProduct.qty = 1;
+
+        return {
+          session: {
+            email: '<%= session.email?session.email:"" %>',
+            authKey: '<%= session.authKey?session.authKey:"" %>',
+            type: 'member',
+          },
+
+          result: {
+            state: '',
+            message: '',
+            data: {},
+          },
+
+          reviewResult: {
+            state: '',
+            message: '',
+            data: {},
+          },
+
+          loading: false,
+          splash: false,
+          alertDialog: false,
+          alertMessage: '',
+          reviewLoading: false,
+          reviewDialog: false,
+
+          colorActive: '',
+          sizeActive: '',
+
+          form: rowProduct,
+          formReview: {
+            review: '',
+          },
+
+          priceGroup: <%- JSON.stringify(rowProduct.priceGroup) %>,
+          rsReview: [],
+        };
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted: function () {
+        this.refreshReviews();
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+
+        /******************
+        <id="_rowColorActive">
+        ******************/
+        rowColorActive: function () {
+          return this.priceGroup[this.colorActive];
+        },
+
+        /******************
+        <id="_rowSizeActive">
+        ******************/
+        rowSizeActive: function () {
+          if (!this.rowColorActive)
+            return '';
+
+          var rowSizeActive;
+
+          this.rowColorActive.forEach(function (row) {
+            if (row.size == this.sizeActive)
+              rowSizeActive = row;
+          }.bind(this));
+
+          return rowSizeActive;
+        },
+
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted: function () {
+        this.setColorActive(Object.keys(this.priceGroup)[0]);
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_setColorActive">
+        ******************/
+        setColorActive: function (color) {
+          this.colorActive = color;
+          this.setSizeActive(this.rowColorActive[0].size);
+        },
+
+        /******************
+        <id="_setSizeActive">
+        ******************/
+        setSizeActive: function (size) {
+          this.sizeActive = size;
+        },
+
+        /******************
+        <id="_buy">
+        ******************/
+        buy: function () {
+          if (this.session.authKey) {
+            this.addToCart(function () {
+              window.location = '/checkout';
+            }.bind(this));
+          }
+          else {
+            HeaderLayout.showLogin(true);
+          }
+        },
+
+        /******************
+        <id="_addToCart">
+        ******************/
+        addToCart: function (callback) {
+
+          if (!this.form.qty) {
+            this.alertMessage = 'Jumlah belum diisi';
+            this.alertDialog = true;
+            return;
+          }
+
+          if (parseInt(this.form.qty) <= 0) {
+            this.alertMessage = 'Jumlah harus lebih besar dari 0';
+            this.alertDialog = true;
+            return;
+          }
+
+          if (this.rowSizeActive.quantity == 0) {
+            this.alertMessage = 'Stok kosong';
+            this.alertDialog = true;
+            return;
+          }
+
+          if (this.form.qty > this.rowSizeActive.quantity) {
+            this.alertMessage = 'Stok tidak mencukupi, silakan kurangi jumlah pemesanan';
+            this.alertDialog = true;
+            return;
+          }
+
+          this.loading = true;
+
+          var url = '/api/cart';
+
+          var data = this.form;
+          data.selectedGroup = this.rowSizeActive;
+          data.selectedGroup.color = this.colorActive;
+
+          axios.post(url, data).then(response => {
+            this.result = response.data;
+
+            if (response.data.state == 'success') {
+
+              HeaderLayout.refreshCart(response.data.data);
+              this.rowSizeActive.quantity -= this.form.qty;
+              this.form.qty = 1;
+
+              this.splash = true;
+
+              setTimeout(function () {
+                this.splash = false;
+              }.bind(this), 2000);
+            }
+
+            this.loading = false;
+            if ($.isFunction(callback)) callback();
+          });
+        },
+
+        /******************
+        <id="_openReview">
+        ******************/
+        openReview: function (callback) {
+          this.reviewDialog = true;
+        },
+
+        /******************
+        <id="_closeReview">
+        ******************/
+        closeReview: function (callback) {
+          this.reviewDialog = false;
+        },
+
+        /******************
+        <id="_submitReview">
+        ******************/
+        submitReview: function (callback) {
+          this.reviewLoading = true;
+
+          var url = '/api/review';
+          var data = this.formReview;
+
+          axios.post(url, data).then(function (response) {
+            this.reviewResult = response.data;
+
+            if (response.data.state == 'success') {
+              alert(response.data.message);
+              // this.splash = true;
+              //
+              // setTimeout(function () {
+              //   this.splash = false;
+              // }.bind(this), 2000);
+            }
+
+            this.reviewLoading = false;
+          }.bind(this));
+        },
+
+        /******************
+        <id="_refreshReviews">
+        ******************/
+        refreshReviews: function (callback) {
+
+        },
+
+      },
+    });
+
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

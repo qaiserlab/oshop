@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <nav id="breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/"><i class="fa fa-home"></i></a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/shop">Belanja</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/shop/cart">Keranjang Belanja</a>
+        </li>
+        <li class="breadcrumb-item active">
+          Checkout
+        </li>
+      </ol>
+    </div>
+  </nav>
+
+  <section id="CheckoutView" class="about-us">
+    <div v-cloak>
+      <section v-if="step == 1" id="Step1" class="container">
+
+        <div class="row">
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="about-us-content">
+              <h1 class="member-title">Alamat Pengiriman</h1>
+
+              <div class="paper">
+
+                <ui-alert :data-source="error.errors"
+                :display="error.display"
+                @close="error.display = false">
+                  {{ error.message }}
+                </ui-alert>
+
+                <div class="row form-table">
+                  <div class="col-md-6">
+
+                    <ui-panel title="Alamat Lengkap Pengiriman">
+                      <ui-textbox v-model="form.firstName">Nama Depan</ui-textbox>
+                      <ui-textbox v-model="form.lastName">Nama Belakang</ui-textbox>
+
+                      <ui-textarea v-model="form.address">Alamat</ui-textarea>
+
+                      <ui-select v-model="form.province"
+                      @input="form.shippingMethod = '';fetchShipmentPrice();"
+                      placeholder="-------- Pilih Provinsi --------"
+                      :data-source="rsProvince"
+                      data-field="province"
+                      data-value="province">Provinsi</ui-select>
+
+                      <ui-select v-model="form.city"
+                      @input="form.shippingMethod = ''"
+                      :disabled="!form.province"
+                      placeholder="-------- Pilih Kota --------"
+                      :data-source="rsCity"
+                      data-field="city"
+                      data-value="city">Kota</ui-select>
+
+                      <ui-select v-model="form.district"
+                      @input="form.shippingMethod = ''"
+                      :disabled="!form.city"
+                      placeholder="-------- Pilih Kecamatan --------"
+                      :data-source="rsDistrict"
+                      data-field="district"
+                      data-value="district">Kecamatan</ui-select>
+
+                      <ui-textbox v-model="form.postalCode">Kode Pos</ui-textbox>
+                      <ui-textbox v-model="form.phoneNumber">No. Telepon</ui-textbox>
+                    </ui-panel>
+
+                  </div>
+
+                  <div class="col-md-6">
+
+                    <ui-panel title="Pembelian Dropship">
+
+                      <label>
+                        <input v-model="form.dropship.isDropship" type="checkbox"> Dropship
+                      </label>
+                      <div v-if="form.dropship.isDropship">
+
+                        <ui-textbox v-model="form.dropship.firstName">Nama Depan</ui-textbox>
+                        <ui-textbox v-model="form.dropship.lastName">Nama Belakang</ui-textbox>
+
+                        <ui-textarea v-model="form.dropship.address">Alamat</ui-textarea>
+
+                        <ui-select v-model="form.dropship.province"
+                        placeholder="-------- Pilih Provinsi --------"
+                        :data-source="rsProvince"
+                        data-field="province"
+                        data-value="province">Provinsi</ui-select>
+
+                        <ui-select v-model="form.dropship.city"
+                        :disabled="!form.dropship.province"
+                        placeholder="-------- Pilih Kota --------"
+                        :data-source="rsCity_"
+                        data-field="city"
+                        data-value="city">Kota</ui-select>
+
+                        <ui-select v-model="form.dropship.district"
+                        :disabled="!form.dropship.city"
+                        placeholder="-------- Pilih Kecamatan --------"
+                        :data-source="rsDistrict_"
+                        data-field="district"
+                        data-value="district">Kecamatan</ui-select>
+
+                        <ui-textbox v-model="form.dropship.postalCode">Kode Pos</ui-textbox>
+                        <ui-textbox v-model="form.dropship.phoneNumber">No. Telepon</ui-textbox>
+
+                      </div>
+                    </ui-panel>
+
+                    <ui-panel title="Stockiest" style="display: none">
+                      <%# <div>
+                        <ui-select v-model="form.stockiestId"
+                        placeholder="-------- Pilih Stockiest --------"
+                        :data-source="rsStockiest_"
+                        data-field="stockiest"
+                        data-value="memberId">Stockiest</ui-select>
+                      </div>%>
+                      <!-- <div v-if="rowStockiest" class="">
+                        <b>Pembayaran ke;</b>
+                        <ul>
+                          <li><b>Bank:</b> {{ rowStockiest.member.bank }}</li>
+                          <li><b>No. Rekening:</b> {{ rowStockiest.member.accountNumber }}</li>
+                          <li><b>Atas Nama:</b> {{ rowStockiest.member.accountName }}</li>
+                        </ul>
+                      </div> -->
+                    </ui-panel>
+
+                    <ui-panel title="Metode Pengiriman">
+                      <ui-select v-model="form.courier"
+                      @input="form.shippingMethod = ''"
+                      :data-source="rsShipmentCourier"
+                      data-field="courier"
+                      data-value="courier">Nama Ekspedisi</ui-select>
+
+                      <ui-radio v-if="rsShippingMethod.length > 0"
+                      v-model="form.shippingMethod"
+                      :data-source="rsShippingMethod"
+                      data-field="shippingMethod"
+                      data-value="shippingMethod">
+                        Jenis Pengiriman
+                      </ui-radio>
+                    </ui-panel>
+
+                    <!-- <ui-panel title="Metode Pembayaran" v-if="form.courier != 'Pick Up'">
+                      <ui-radio v-model="form.paymentMethod"
+                      :data-source="rsPaymentMethod"
+                      data-field="paymentMethod"
+                      data-value="paymentMethod"></ui-radio>
+                    </ui-panel> -->
+
+                  </div>
+                </div>
+
+                <div class="button-group">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <ui-button href="/shop/cart" bs-type="danger">Kembali</ui-button>
+                      <ui-button @click="nextStep2" :loading="loading">Lanjutkan</ui-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <section v-if="step == 2" id="Step2" class="container">
+        <div class="row">
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="about-us-content">
+              <h1 class="member-title">Konfirmasi Order</h1>
+
+              <div class="paper">
+
+                <div class="row">
+                  <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="table-cart">
+                      <table class="table table-responsive">
+                        <tbody>
+
+                          <tr v-for="row in cart">
+                            <td>
+                              <div class="img">
+                                <img :src="'/writable/archives/' + row.featuredImage" style="width: 50px">
+                              </div>
+                            </td>
+                            <td>
+                              <div style="font-weight: bold">
+                                {{ row.productName }}
+                              </div>
+                            </td>
+                            <td>
+                              <div class="color-size">
+                                <span>
+                                  Color:
+                                  <i class="fa fa-square"
+                                  :style="{ color: row.selectedGroup.color }"></i>
+                                </span><br>
+                                <span>Size: {{ row.selectedGroup.size }}</span>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="price">
+                                <span>Price</span><br>
+                                <div style="color: #D92E2E">{{ row.selectedGroup.price_ }}</div>
+                                <small>PV: {{ row.point }}</small>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="total">
+                                <span>Qty</span><br>
+                                <span style="color: #D92E2E">{{ row.qty }}</span>
+                              </div>
+                            </td>
+
+                            <td>
+                              <div class="total">
+                                <span>Sub Total</span><br>
+                                <div style="color: #D92E2E">{{ row.selectedGroup.subTotal_ }}</div>
+                                <small>PV: {{ row.qty * row.point }}</small>
+                              </div>
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td colspan="5" align="right">
+                              <b>Sub Total</b>
+                            </td>
+                            <td style="color: #D92E2E">Rp{{ subTotal_ }}</td>
+                          </tr>
+
+                          <tr>
+                            <td colspan="5" align="right">
+                              <b>Biaya Pengiriman</b>
+                            </td>
+                            <td style="color: #D92E2E">Rp{{ shipmentCost_ }}</td>
+                          </tr>
+
+                          <tr>
+                            <td colspan="5" align="right">
+                              <b>Kode Unik</b>
+                            </td>
+                            <td style="color: #D92E2E">{{ this.form.uniqueCode }}</td>
+                          </tr>
+                          <tr>
+                            <td colspan="5" align="right">
+                              <b>Total</b>
+                            </td>
+                            <td style="color: #D92E2E">Rp{{ total_ }}</td>
+                          </tr>
+                          <tr>
+                            <td colspan="5" align="right">
+                              <b>Total PV</b>
+                            </td>
+                            <td style="color: #D92E2E">{{ totalPv }}</td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+
+                  <div v-if="this.form.dropship.isDropship" class="col-md-4">
+                    <h1 class="member-title">Data Pengirim Dropship</h1>
+                    <p>
+                      <b>Nama:</b>
+                      {{ this.form.dropship.firstName }} {{ this.form.dropship.lastName }}<br>
+
+                      <b>Alamat:</b>
+                      {{ this.form.dropship.address }}<br>
+
+                      <b>Kode Pos:</b> {{ this.form.dropship.postalCode }}<br>
+                      <b>No. Telepon:</b> {{ this.form.dropship.phoneNumber }}
+                    </p>
+                  </div>
+
+                  <div class="col-md-4">
+                    <h1 class="member-title">Alamat Pengiriman</h1>
+                    <p>
+                      <b>Nama:</b>
+                      {{ this.form.firstName }} {{ this.form.lastName }}<br>
+
+                      <b>Alamat:</b>
+                      {{ this.form.address }}<br>
+
+                      <b>Kode Pos:</b> {{ this.form.postalCode }}<br>
+                      <b>No. Telepon:</b> {{ this.form.phoneNumber }}
+                    </p>
+                  </div>
+
+                  <!-- <div class="col-md-4">
+                    <h1 class="member-title">Metode Pengiriman & Pembayaran</h1>
+                    <p>
+                      <b>Pengiriman:</b>
+                      {{ this.form.shippingMethod }}<br>
+
+                      <b>Pembayaran:</b>
+                      {{ this.form.paymentMethod }}
+                    </p>
+                  </div> -->
+                </div>
+
+                <div class="button-group">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <ui-button @click="step = 1" bs-type="danger">Kembali</ui-button>
+                      <ui-button @click="nextStep3" :loading="loading">Konfirmasi</ui-button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section v-if="step == 3" id="Step3" class="container">
+        <div class="row">
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="about-us-content">
+
+
+              <div class="paper">
+                <div class="alert alert-success">
+                  <h1 class="member-title">Order Sukses</h1>
+                  <p>
+                    Terima kasih sudah berbelanja di Cozmeed Network,
+                    kami sudah mengirimkan detail order ke alamat email Anda.
+                  </p>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <p>
+                      Halo {{ form.memberName }},
+                      <br><br>
+                      Produk pembelian Anda sudah disimpan dengan nomor invoice <b>{{ form.code }}</b>.
+                      <br>
+                      Berikut data pesanan Anda:
+                    </p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="table-cart">
+                      <table class="table table-responsive" width="100%">
+                        <tbody>
+
+                          <tr v-for="row in cart">
+                            <td>
+                              <div class="img">
+                                <img :src="'/writable/archives/' + row.featuredImage" style="width: 50px">
+                              </div>
+                            </td>
+                            <td>
+                              <div style="font-weight: bold">
+                                {{ row.productName }}
+                              </div>
+                            </td>
+                            <td>
+                              <div class="color-size">
+                                <span>
+                                  Color:
+                                  <i class="fa fa-square"
+                                  :style="{ color: row.selectedGroup.color }"></i>
+                                </span><br>
+                                <span>Size: {{ row.selectedGroup.size }}</span>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="price">
+                                <span>Price</span><br>
+                                <div style="color: #D92E2E">{{ row.selectedGroup.price_ }}</div>
+                                <small>PV: {{ row.point }}</small>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="total">
+                                <span>Qty</span><br>
+                                <span style="color: #D92E2E">{{ row.qty }}</span>
+                              </div>
+                            </td>
+
+                            <td>
+                              <div class="total">
+                                <span>Sub Total</span><br>
+                                <div style="color: #D92E2E">{{ row.selectedGroup.subTotal_ }}</div>
+                                <small>PV: {{ row.qty * row.point }}</small>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="5" align="right">
+                              <b>Sub Total</b>
+                            </td>
+                            <td style="color: #D92E2E">Rp{{ subTotal_ }}</td>
+                          </tr>
+
+                          <tr>
+                            <td colspan="5" align="right">
+                              <b>Biaya Pengiriman</b>
+                            </td>
+                            <td style="color: #D92E2E">Rp{{ shipmentCost_ }}</td>
+                          </tr>
+
+                          <tr>
+                            <td colspan="5" align="right">
+                              <b>Kode Unik</b>
+                            </td>
+                            <td style="color: #D92E2E">{{ this.form.uniqueCode }}</td>
+                          </tr>
+                          <tr>
+                            <td colspan="5" align="right">
+                              <b>Total</b>
+                            </td>
+                            <td style="color: #D92E2E">Rp{{ total_ }}</td>
+                          </tr>
+                          <tr>
+                            <td colspan="5" align="right">
+                              <b>Total PV</b>
+                            </td>
+                            <td style="color: #D92E2E">{{ totalPv }}</td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+
+                  <div v-if="this.form.dropship.isDropship" class="col-md-4">
+                    <h1 class="member-title">Data Pengirim Dropship</h1>
+                    <p>
+                      <b>Nama:</b>
+                      {{ this.form.dropship.firstName }} {{ this.form.dropship.lastName }}<br>
+
+                      <b>Alamat:</b>
+                      {{ this.form.dropship.address }}<br>
+
+                      <b>Kode Pos:</b> {{ this.form.dropship.postalCode }}<br>
+                      <b>No. Telepon:</b> {{ this.form.dropship.phoneNumber }}
+                    </p>
+                  </div>
+
+                  <div class="col-md-4">
+                    <h1 class="member-title">Alamat Pengiriman</h1>
+                    <p>
+                      <b>Nama:</b>
+                      {{ this.form.firstName }} {{ this.form.lastName }}<br>
+
+                      <b>Alamat:</b>
+                      {{ this.form.address }}<br>
+
+                      <b>Kode Pos:</b> {{ this.form.postalCode }}<br>
+                      <b>No. Telepon:</b> {{ this.form.phoneNumber }}
+                    </p>
+                  </div>
+
+                  <div class="col-md-4">
+                    <h5 class="member-title">
+                      Pembayaran dapat dikirim ke salah satu rekening berikut;
+                    </h5>
+                    <p v-for="bank in rsBank">
+                      <b>Bank:</b>
+                      {{ bank.bank }}<br>
+
+                      <b>No. Rekening:</b>
+                      {{ bank.accountNumber }}<br>
+
+                      <b>Atas Nama:</b>
+                      {{ bank.accountName }}
+
+                    </p>
+                  </div>
+
+                  <!-- <div class="col-md-4">
+                    <h1 class="member-title">Metode Pengiriman & Pembayaran</h1>
+                    <p>
+                      <b>Pengiriman:</b>
+                      {{ this.form.shippingMethod }}<br>
+
+                      <b>Pembayaran:</b>
+                      {{ this.form.paymentMethod }}
+                    </p>
+                  </div> -->
+                </div>
+
+                <hr>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    Terima kasih telah berbelanja di Cozmeed<br><br>
+                    Silahkan menyelesaikan proses pembayaran Anda sebelum {{ dueDate }}
+                    <br>
+
+                    <!--
+                    melalui nomor rekening dibawah ini:
+                    Nama Bank : BCA
+                    No. Rekening : 0153721111
+                    Atas Nama : PT Cozmeed Network
+                    -->
+
+                    Silakan melakukan pembayaran dan melakukan konfirmasi setelah membayar
+                    <br>
+                    <br>
+                    <a class="btn btn-primary"
+                    :href="'/shop/confirm-payment?code=' + form.code">Konfirmasi Pembayaran</a>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var CheckoutView = new Vue({
+      el: '#CheckoutView',
+      /******************
+      <id="_data">
+      ******************/
+      data() {
+        return {
+          session: {
+            email: '<%= session.email?session.email:"" %>',
+            authKey: '<%= session.authKey?session.authKey:"" %>',
+            memberId: '<%= session.memberId?session.memberId:"" %>',
+            fullName: '<%= session.fullName?session.fullName:"" %>',
+            type: 'member',
+          },
+          cart: <%- JSON.stringify(session.cart) %>,
+
+          error: {
+            display: false,
+            message: '',
+            errors: {},
+          },
+
+          result: {
+            state: '',
+            message: '',
+            data: {},
+          },
+
+          loading: false,
+          step: 1,
+
+          rsGender: [
+            { id: 'Laki-laki' },
+            { id: 'Perempuan' },
+          ],
+
+          rsBank: <%- JSON.stringify(rsBank) %>,
+          rsProvince: <%- JSON.stringify(rsRegional) %>,
+          // rsStockiest: <%- JSON.stringify(rsStockiest) %>,
+          rsShipmentPrice: <%- JSON.stringify(rsShipmentPrice) %>,
+          rsShipmentCourier: <%- JSON.stringify(rsShipmentCourier) %>,
+          rsPaymentMethod: <%- JSON.stringify(rsPaymentMethod) %>,
+
+          form: {
+            code: '',
+
+            memberId: '<%= rowMember.memberId %>',
+            memberName: '<%= session.fullName %>',
+
+            firstName: '<%= rowMember.firstName %>',
+            lastName: '<%= rowMember.lastName %>',
+            address: `<%= rowMember.address %>`,
+            province: '<%= rowMember.province %>',
+            city: '<%= rowMember.city %>',
+            district: '<%= rowMember.district %>',
+            postalCode: '',
+            phoneNumber: '<%= rowMember.phoneNumber %>',
+
+            dropship: {
+              isDropship: false,
+              firstName: '<%= rowMember.firstName %>',
+              lastName: '<%= rowMember.lastName %>',
+              address: `<%= rowMember.address %>`,
+              province: '<%= rowMember.province %>',
+              city: '<%= rowMember.city %>',
+              district: '<%= rowMember.district %>',
+              postalCode: '',
+              phoneNumber: '<%= rowMember.phoneNumber %>',
+            },
+
+            stockiestId: '',
+
+            courier: '',
+            shippingMethod: '',
+            paymentMethod: '',
+            cart: [],
+            uniqueCode: 0,
+            shipmentCost: 0,
+          },
+        };
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+
+        /******************
+        <id="_rsStockiest_">
+        ******************/
+        // rsStockiest_() {
+        //   let rsStockiest = this.rsStockiest.filter(row => {
+        //     if (row.memberId == this.session.memberId)
+        //       return false;
+        //     else
+        //       return row.member.province == this.form.province;
+        //   });
+        //
+        //   return rsStockiest.map(row => {
+        //     row.stockiest = row.memberId + ' / ' + row.member.fullName;
+        //     return row;
+        //   });
+        // },
+
+        /******************
+        <id="_rowStockiest">
+        ******************/
+        // rowStockiest() {
+        //   let rsStockiest = this.rsStockiest.filter(row => {
+        //     return this.form.stockiestId == row.memberId;
+        //   });
+        //
+        //   return rsStockiest[0];
+        // },
+
+        /******************
+        <id="_rsCity">
+        ******************/
+        rsCity() {
+
+          var rowProvince = this.rsProvince.filter(row => {
+            return row.province == this.form.province;
+          });
+
+          if (rowProvince.length >= 1)
+            return rowProvince[0].cities;
+          else
+            return [];
+        },
+
+        /******************
+        <id="_rsDistrict">
+        ******************/
+        rsDistrict() {
+
+          var rowCity = this.rsCity.filter(row => {
+            return row.city == this.form.city;
+          });
+
+          if (rowCity.length >= 1)
+            return rowCity[0].districts;
+          else
+            return [];
+        },
+
+        /******************
+        <id="_rsCity_">
+        ******************/
+        rsCity_() {
+
+          var rowProvince = this.rsProvince.filter(row => {
+            return row.province == this.form.dropship.province;
+          });
+
+          if (rowProvince.length >= 1)
+            return rowProvince[0].cities;
+          else
+            return [];
+        },
+
+        /******************
+        <id="_rsDistrict_">
+        ******************/
+        rsDistrict_() {
+
+          var rowCity = this.rsCity_.filter(row => {
+            return row.city == this.form.dropship.city;
+          });
+
+          if (rowCity.length >= 1)
+            return rowCity[0].districts;
+          else
+            return [];
+        },
+
+        /******************
+        <id="_totalWeight">
+        ******************/
+        totalWeight() {
+          var totalWeight = 0;
+
+          this.cart.forEach(row => {
+            totalWeight += (row.weight * row.qty);
+          });
+
+          return totalWeight;
+        },
+
+        /******************
+        <id="_rsShippingMethod">
+        ******************/
+        rsShippingMethod() {
+
+          var rsShipmentPrice_ = this.rsShipmentPrice.filter(row => {
+            return row.province == this.form.province &&
+            row.city == this.form.city &&
+            row.district == this.form.district &&
+            row.courier == this.form.courier;
+          });
+
+          var rsShipmentPrice = [];
+          rsShipmentPrice_.forEach(row => {
+            var found = false;
+
+            console.log('------------------------------');
+            console.log('START');
+            console.log('------------------------------');
+
+            rsShipmentPrice.forEach(row_ => {
+              console.log('provinsi: ' + row_.province + ' = ' + row.province);
+              console.log('city: ' + row_.city + ' = ' + row.city);
+              console.log('district: ' + row_.district + ' = ' + row.district);
+              console.log('courier: ' + row_.courier + ' = ' + row.courier);
+
+              if (row.province == row_.province &&
+                row.city == row_.city &&
+                row.district == row_.district &&
+                row.courier == row_.courier &&
+                row.price == row_.price) {
+                  found = true;
+                }
+
+              console.log('------------------------------');
+            });
+
+            if (!found) rsShipmentPrice.push(row);
+
+
+            console.log('found = ' + found);
+            console.log('price = ' + row.price);
+
+            console.log('------------------------------');
+            console.log('END');
+            console.log('------------------------------');
+
+            // var found = rsShipmentPrice.some(row_ => {
+            //   // console.log('perbandingan:');
+            //   // console.log(row);
+            //   // console.log(row_);
+            //
+            //   return row.province == row_.province &&
+            //   row.city == row_.city &&
+            //   row.district == row_.district &&
+            //   row.courier == row_.courier;
+            // });
+            //
+            // if (!found)
+              // rsShipmentPrice.push(row);
+
+          });
+
+          // console.log(rsShipmentPrice);
+
+          if (rsShipmentPrice.length > 0) {
+            return rsShipmentPrice.map(row => {
+
+              var weight = Math.ceil(this.totalWeight / 1000);
+              var totalPrice = row.price * weight;
+              var totalPrice_ = totalPrice.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+
+              row.totalPrice = totalPrice;
+              row.totalPrice_ = totalPrice_;
+              row.shippingMethod = row.courier + ' ' + row.service + ' Rp' + totalPrice_;
+
+              return row;
+            });
+          }
+          else
+            return  [];
+
+        },
+
+        /******************
+        <id="_shipmentCost">
+        ******************/
+        shipmentCost() {
+          var shipmentCost = 0;
+
+          this.rsShippingMethod.forEach(row => {
+            if (row.shippingMethod == this.form.shippingMethod)
+              shipmentCost = row.totalPrice;
+          });
+
+          return shipmentCost;
+        },
+
+        /******************
+        <id="_shipmentCost_">
+        ******************/
+        shipmentCost_() {
+          var shipmentCost = 0;
+
+          this.rsShippingMethod.forEach(row => {
+
+            if (row.shippingMethod == this.form.shippingMethod)
+              shipmentCost = row.totalPrice_;
+          });
+
+          return shipmentCost;
+        },
+
+        /******************
+        <id="_subTotal">
+        ******************/
+        subTotal() {
+          var subTotal = 0;
+
+          this.cart.forEach(function (row) {
+            subTotal += row.selectedGroup.subTotal;
+          }.bind(this));
+
+          return subTotal;
+        },
+
+        /******************
+        <id="_subTotal_">
+        ******************/
+        subTotal_() {
+          return this.subTotal.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+        },
+
+        /******************
+        <id="_totalPv">
+        ******************/
+        totalPv() {
+          var totalPv = 0;
+
+          this.cart.forEach(function (row) {
+            totalPv += row.qty * row.point;
+          }.bind(this));
+
+          return totalPv;
+        },
+
+        /******************
+        <id="_total">
+        ******************/
+        total() {
+          var total = this.subTotal + this.shipmentCost + this.form.uniqueCode;
+          return total;
+        },
+
+        /******************
+        <id="_total_">
+        ******************/
+        total_() {
+          return this.total.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+        },
+
+        /******************
+        <id="_orderDate">
+        ******************/
+        orderDate() {
+          var orderDate = new Date(Date.now());
+          return orderDate.getDate() + '/' + orderDate.getMonth() + '/' + orderDate.getFullYear();
+        },
+
+        /******************
+        <id="_dueDate">
+        ******************/
+        dueDate() {
+          var dueDate = new Date(Date.now() + 1 * 24 * 3600 * 1000);
+          return (dueDate.getDate() + 1) + '/' + dueDate.getMonth() + '/' + dueDate.getFullYear();
+        },
+
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted() {
+        this.fetchShipmentPrice();
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_fetchShipmentPrice">
+        ******************/
+        fetchShipmentPrice() {
+
+          if (this.form.province) {
+            var url = '/api/shipment-price?province=' + encodeURIComponent(this.form.province);
+
+            axios.get(url).then(response => {
+              var result = response.data;
+              this.rsShipmentPrice = result.data;
+            });
+          }
+
+        },
+
+        /******************
+        <id="_getShipment">
+        ******************/
+        getShipment(field) {
+          var shipment = 0;
+
+          this.rsShippingMethod.forEach(row => {
+            if (row.shippingMethod == this.form.shippingMethod)
+              shipment = row[field];
+          });
+
+          return shipment;
+        },
+
+        /******************
+        <id="_random3digit">
+        ******************/
+        random3digit() {
+          var random5number = Math.floor(Math.random()*90000) + 10000;
+          var random3number = parseInt(random5number.toString().substr(0, 3));
+          return random3number;
+        },
+
+        /******************
+        <id="_nextStep2">
+        ******************/
+        nextStep2() {
+          var errors = {};
+
+          if (!this.form.firstName) errors.firstName = { message: 'Nama Depan belum diisi' };
+          if (!this.form.address) errors.address = { message: 'Alamat belum diisi' };
+          if (!this.form.province) errors.province = { message: 'Provinsi belum diisi' };
+          if (!this.form.city) errors.city = { message: 'Kota belum diisi' };
+          if (!this.form.district) errors.district = { message: 'Kecamatan belum diisi' };
+          if (!this.form.postalCode) errors.postalCode = { message: 'Kode Pos belum diisi' };
+
+          if (this.form.dropship.isDropship) {
+            if (!this.form.dropship.firstName) errors.dropshipFirstName = { message: 'Nama Depan (Dropship) belum diisi' };
+            if (!this.form.dropship.address) errors.dropshipAddress = { message: 'Alamat (Dropship) belum diisi' };
+            if (!this.form.dropship.province) errors.dropshipProvince = { message: 'Provinsi (Dropship) belum diisi' };
+            if (!this.form.dropship.city) errors.dropshipCity = { message: 'Kota (Dropship) belum diisi' };
+            if (!this.form.dropship.district) errors.dropshipDistrict = { message: 'Kecamatan (Dropship) belum diisi' };
+            if (!this.form.dropship.postalCode) errors.dropshipPostalCode = { message: 'Kode Pos (Dropship) belum diisi' };
+          }
+
+          if (!this.form.courier) errors.courier = { message: 'Ekspedisi belum diisi' };
+          if (this.form.courier && !this.form.shippingMethod) {
+            if (this.form.courier != 'Pick Up')
+              errors.shippingMethod = { message: 'Jenis Pengiriman belum diisi' };
+          }
+          // if (!this.form.paymentMethod) errors.paymentMethod = { message: 'Path `paymentMethod` is required' };
+
+          var body = $("html, body");
+          body.stop().animate({scrollTop:0}, 500, 'swing');
+
+          if (!$.isEmptyObject(errors)) {
+            this.error.display = true;
+            this.error.message = 'Silakan perbaiki kesalahan berikut;';
+            this.error.errors = { errors };
+            return;
+          }
+
+          this.form.shipmentCost = this.shipmentCost;
+          this.form.uniqueCode = this.random3digit();
+
+          this.error.display = false;
+          this.step = 2;
+        },
+
+        /******************
+        <id="_nextStep3">
+        ******************/
+        nextStep3() {
+          this.loading = true;
+
+          var url = '/api/order';
+          var data = this.form;
+
+          if (this.form.courier != 'Pick Up') {
+            data.shipment = {
+              courier: this.getShipment('courier'),
+              service: this.getShipment('service'),
+              description: this.getShipment('description'),
+              price: this.getShipment('price'),
+            };
+          }
+
+          data.cart = this.cart;
+
+          axios.post(url, data).then(response => {
+            var body = $("html, body");
+            body.stop().animate({scrollTop:0}, 500, 'swing');
+
+            if (response.data.state == 'success') {
+              this.form.code = response.data.data.code;
+
+              HeaderLayout.refreshCart([]);
+              this.step = 3;
+            }
+
+            this.result = response.data;
+            this.loading = false;
+          });
+        },
+
+      },
+
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

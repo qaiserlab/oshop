@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section class="about-us">
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title"><%= title %></h1>
+
+            <div class="paper">
+              <div class="row">
+                <div class="col-md-12">
+
+                  <table class="table">
+                    <thead>
+
+                      <th>Invoice</th>
+                      <th>Tanggal</th>
+                      <th>Member</th>
+                      <th style="text-align: right">Status</th>
+                      <th style="text-align: right">Total</th>
+
+                    </thead>
+                    <tbody>
+
+                      <% rsOrder.forEach(row => { %>
+
+                        <tr>
+                          <td>
+                            <a href="/member/invoice/<%= row.code %>">
+                              <%= row.code %>
+                            </a>
+                          </td>
+                          <td>
+                          <%= row.orderDate_ %>
+                          </td>
+                          <td><%= row.memberId %> / <%= row.firstName %> <%= row.lastName %></td>
+
+                          <td style="text-align: right">
+                            <div class="badge badge-primary"><%= row.status %></div>
+                          </td>
+                          <td style="text-align: right">
+                            <%= row.total_ %>
+                          </td>
+                        </tr>
+                      <% }); %>
+
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

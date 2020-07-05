@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <nav id="breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/"><i class="fa fa-home"></i></a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/register">Registrasi</a>
+        </li>
+        <li class="breadcrumb-item active">Premium</li>
+      </ol>
+    </div>
+  </nav>
+
+  <section id="RegisterPremiumView" class="about-us">
+    <div class="container">
+
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <div class="about-us-content">
+            <h1 class="member-title">Registrasi</h1>
+
+            <div class="paper">
+
+              <%# <ui-alert :data-source="result.data"
+              :display="result.state == 'invalid'"
+              @close="result.state = ''">
+                {{ result.message }}
+              </ui-alert>%>
+
+              <div class="row">
+
+                <div class="col-md-12">
+
+                  <div v-if="!success">
+                    <div class="row">
+                      <div class="col-md-10">
+                        <input v-model="form.sponsorId"
+                        ref="sponsorId"
+                        placeholder="Masukan ID Sponsor..."
+                        class="awesomplete form-control"
+                        @keyup="findSponsor"
+                        @keyup.enter="forceAwesompleteValue('sponsorId', $event)"
+                        @blur="forceAwesompleteValue('sponsorId', $event)">
+
+                        <span v-if="sponsorLoading"
+                        style="position: absolute; right: 24px; bottom: 8px" class="icon">
+                          <i class="fa fa-spin fa-refresh"></i>
+                        </span>
+
+                        <sup class="error-line" style="top: -16px">
+                          {{ result.data.errors.sponsorId?result.data.errors.sponsorId.message:'' }}
+                        </sup>
+                      </div>
+                      <div class="col-md-2">
+                        <ui-button :loading="generateLoading"
+                        @click="generateSponsor">Generate</ui-button>
+                      </div>
+                    </div>
+                    <hr>
+
+                    <div class="row">
+                      <div class="col-md-12">
+                        <ui-textbox v-model="form.memberId">Username</ui-textbox>
+                        <sup class="error-line">
+                          {{ result.data.errors.memberId?result.data.errors.memberId.message:'' }}
+                        </sup>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <ui-textbox v-model="form.firstName">Nama Depan</ui-textbox>
+                        <sup class="error-line">
+                          {{ result.data.errors.firstName?result.data.errors.firstName.message:'' }}
+                        </sup>
+                      </div>
+                      <div class="col-md-6">
+                        <ui-textbox v-model="form.lastName">Nama Belakang</ui-textbox>
+                        <sup class="error-line">
+                          {{ result.data.errors.lastName?result.data.errors.lastName.message:'' }}
+                        </sup>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <ui-textbox v-model="form.email">Email</ui-textbox>
+                        <sup class="error-line">
+                          {{ result.data.errors.email?result.data.errors.email.message:'' }}
+                        </sup>
+                      </div>
+                      <div class="col-md-6">
+                        <ui-textbox v-model="form.phoneNumber">No. Telepon</ui-textbox>
+                        <sup class="error-line">
+                          {{ result.data.errors.phoneNumber?result.data.errors.phoneNumber.message:'' }}
+                        </sup>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <ui-textbox v-model="form.password" type="password">Password</ui-textbox>
+                        <sup class="error-line">
+                          {{ result.data.errors.password?result.data.errors.password.message:'' }}
+                        </sup>
+                      </div>
+                      <div class="col-md-6">
+                        <ui-textbox v-model="form.retypePassword" type="password">Konfirmasi Password</ui-textbox>
+                        <sup class="error-line">
+                          {{ result.data.errors.retypePassword?result.data.errors.retypePassword.message:'' }}
+                        </sup>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-4">
+                        <ui-select v-model="form.bank"
+                        :data-source="rsBank"
+                        data-field="bank"
+                        data-value="bank"
+                        placeholder="------ Pilih Bank ------">Bank</ui-select>
+
+                        <sup class="error-line">
+                          {{ result.data.errors.bank?result.data.errors.bank.message:'' }}
+                        </sup>
+                      </div>
+                      <div class="col-md-4">
+                        <ui-textbox v-model="form.accountNumber">No. Rekening</ui-textbox>
+                        <sup class="error-line">
+                          {{ result.data.errors.accountNumber?result.data.errors.accountNumber.message:'' }}
+                        </sup>
+                      </div>
+                      <div class="col-md-4">
+                        <ui-textbox v-model="form.accountName">Nama Pemilik</ui-textbox>
+                        <sup class="error-line">
+                          {{ result.data.errors.accountName?result.data.errors.accountName.message:'' }}
+                        </sup>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div v-else>
+                      Terima kasih, telah mendaftar sebagai member di Cozmeed Network.
+                      Akun Anda sedang menunggu persetujuan dari sponsor yg Anda tunjuk.
+                      <a href="/">Kembali ke Beranda</a>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="button-group" v-if="!success">
+                <div class="row">
+                  <div class="col-md-12">
+                    <ui-button href="/register" bs-type="danger">Kembali</ui-button>
+                    <ui-button @click="register" :loading="loading">Registrasi</ui-button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var RegisterPremiumView = new Vue({
+      el: '#RegisterPremiumView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        session: {
+          email: '<%= session.email?session.email:"" %>',
+          authKey: '<%= session.authKey?session.authKey:"" %>',
+          type: 'member',
+        },
+
+        result: {
+          state: '',
+          message: '',
+          data: { errors: {} },
+        },
+
+        loading: false,
+        sponsorLoading: false,
+        generateLoading: false,
+        success: false,
+
+        rsSponsor: [],
+        rsPaymentMethod: <%- JSON.stringify(rsPaymentMethod) %>,
+
+        rsBank: <%- JSON.stringify(rsBank) %> || [],
+
+        form: {
+          sponsorId: '',
+          firstName: '',
+          lastName: '',
+          email: '',
+          phoneNumber: '',
+          password: '',
+          retypePassword: '',
+          bank: '',
+          accountNumber: '',
+          accountName: '',
+        },
+
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+
+        /******************
+        <id="_sponsorId">
+        ******************/
+        sponsorId() {
+          var xMemberId = this.form.sponsorId.split('/');
+          return xMemberId[0];
+        },
+
+        /******************
+        <id="_rsSponsor_">
+        ******************/
+        rsSponsor_() {
+          return this.rsSponsor.map(row => row.memberId + '/' + row.fullName);
+        },
+
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted: function () {
+        this.sponsorAwesomplete = new Awesomplete(this.$refs.sponsorId);
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_generateSponsor">
+        ******************/
+        generateSponsor: function () {
+          this.generateLoading = true;
+
+          var url = '/api/account/generate-sponsor';
+
+          axios.get(url).then(function (response) {
+
+            if (response.data.state == 'success')
+              this.form.sponsorId = response.data.data;
+
+            this.generateLoading = false;
+          }.bind(this));
+        },
+
+        /******************
+        <id="_forceAwesompleteValue">
+        ******************/
+        forceAwesompleteValue(textboxId, event) {
+          var value = event.currentTarget.value;
+          this.form[textboxId] = event.currentTarget.value;
+        },
+
+        /******************
+        <id="_findSponsor">
+        ******************/
+        findSponsor(event) {
+
+
+          if ((event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 13)) {
+
+            if (event.currentTarget.value.length == 2) {
+              this.sponsorLoading = true;
+
+              axios.get('/api/member/find/' + this.form.sponsorId).then(response => {
+
+                this.rsSponsor = response.data.data;
+
+                this.sponsorAwesomplete.list = this.rsSponsor_;
+                this.sponsorAwesomplete.evaluate();
+
+                this.sponsorLoading = false;
+              });
+            }
+
+          }
+
+        },
+
+        /******************
+        <id="_register">
+        ******************/
+        register: function () {
+          this.loading = true;
+
+          var url = '/api/account/register-premium';
+          var data = { ...this.form };
+          data.sponsorId = this.sponsorId;
+
+          axios.post(url, data).then(function (response) {
+            this.result = response.data;
+            if (!this.result.data.errors) this.result.data.errors = {};
+
+            if (response.data.state == 'success') {
+              // this.form.serialNumber = '';
+              // this.form.pin = '';
+              // this.form.firstName = '';
+              // this.form.lastName = '';
+              // this.form.email = '';
+              // this.form.phoneNumber = '';
+              // this.form.password = '';
+              // this.form.retypePassword = '';
+
+              this.success = true;
+            }
+
+            this.loading = false;
+
+            var body = $("html, body");
+            body.stop().animate({scrollTop: 0}, 500, 'swing');
+          }.bind(this));
+        },
+
+      },
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

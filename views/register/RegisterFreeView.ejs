@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <nav id="breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/"><i class="fa fa-home"></i></a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="/register">Registrasi</a>
+        </li>
+        <li class="breadcrumb-item active">Free</li>
+      </ol>
+    </div>
+  </nav>
+
+  <section id="RegisterFreeView" class="about-us">
+    <div class="container">
+
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <div class="about-us-content">
+            <h1 class="member-title">Daftar Free Member</h1>
+
+            <div class="paper">
+
+              <ui-alert :data-source="result.data"
+              :display="result.state == 'invalid'"
+              @close="result.state = ''">
+                {{ result.message }}
+              </ui-alert>
+
+              <div class="row form-table">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                  <ui-textbox v-model="form.firstName">Nama Depan</ui-textbox>
+                  <ui-textbox v-model="form.lastName">Nama Belakang</ui-textbox>
+                  <ui-textbox v-model="form.email">Email</ui-textbox>
+                  <ui-textbox v-model="form.phoneNumber">No. Telepon</ui-textbox>
+                  <ui-textbox v-model="form.password" type="password">Password</ui-textbox>
+                  <ui-textbox v-model="form.retypePassword" type="password">Retype Password</ui-textbox>
+                </div>
+              </div>
+
+              <div class="button-group">
+                <div class="row">
+                  <div class="col-md-2"></div>
+                  <div class="col-md-8">
+                    <ui-button href="/register" bs-type="danger">Kembali</ui-button>
+                    <ui-button @click="register" :loading="loading">Register</ui-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var RegisterFreeView = new Vue({
+      el: '#RegisterFreeView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        session: {
+          email: '<%= session.email?session.email:"" %>',
+          authKey: '<%= session.authKey?session.authKey:"" %>',
+          type: 'member',
+        },
+
+        result: {
+          state: '',
+          message: '',
+          data: {},
+        },
+
+        loading: false,
+
+        form: {
+          firstName: '',
+          lastName: '',
+          email: '',
+          phoneNumber: '',
+          password: '',
+          retypePassword: '',
+        },
+
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted: function () {
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_register">
+        ******************/
+        register: function () {
+          this.loading = true;
+
+          var url = '/api/account/register-free';
+          var data = this.form;
+
+          axios.post(url, data).then(function (response) {
+
+            if (response.data.state == 'success')
+              window.location = '/';
+
+            this.result = response.data;
+            this.loading = false;
+          }.bind(this));
+        },
+
+      },
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

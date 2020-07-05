@@ -1,0 +1,279 @@
+<div id="MenuView">
+  <nav class="navbar bg-light">
+
+    <ul class="navbar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link" href="/member/profile">Profile</a>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link"
+        href="#collapse-1"
+        data-toggle="collapse" aria-expanded="true">
+          Genealogy
+          <i class="fa fa-caret-down"></i>
+        </a>
+
+        <ul id="collapse-1" class="collapse">
+          <li class="nav-item">
+            <a class="sub-link" href="/member/genealogy-tree">Tree</a>
+          </li>
+          <li class="nav-item">
+            <a class="sub-link" href="/member/genealogy-reference">Referensi</a>
+          </li>
+        </ul>
+      </li>
+
+      <% if (session.mode == 'Member') { %>
+        <li class="nav-item dropdown">
+          <a class="nav-link"
+          href="#collapse-2"
+          data-toggle="collapse">
+            Insentif
+            <i class="fa fa-caret-down"></i>
+          </a>
+
+          <ul id="collapse-2" class="collapse">
+            <li class="nav-item">
+              <a class="sub-link" href="/member/bonus-sponsor">Bonus Sponsor</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/flash-sale-20">Flash Sale 20%</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/performance-incentives">Performance Incentives 10%</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/personal-spending-bonus">Personal Spending Bonus</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/leadership-bonus">Leadership Bonus</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/functional-incentives">Functional Incentives</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/unilevel-bonus">Unilevel Bonus</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/home-car-ownership-incentives">Home/Car Ownership Incentives</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/travel-aboard-incentives">Travel Abroad Incentives</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/platinum-ranger-bonus">Platinum Ranger Bonus</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/salary-on-job">Salary On Job</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/global-sharing-bonus">Global Sharing</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/point-reward-bonus">Point Reward</a>
+            </li>
+
+          </ul>
+
+        </li>
+      <% } %>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/member/ewallet">Ewallet</a>
+      </li>
+
+      <% if (session.mode == 'Member') { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/member/riwayat-belanja">Riwayat Belanja</a>
+        </li>
+      <% } %>
+
+      <% if (session.mode == 'Stokist' && session.isStockiest) { %>
+        <li class="nav-item dropdown">
+          <a class="nav-link"
+          href="#collapse-stock"
+          data-toggle="collapse">
+            Stok
+            <i class="fa fa-caret-down"></i>
+          </a>
+
+          <ul id="collapse-stock" class="collapse">
+
+            <li class="nav-item">
+              <a class="nav-link" href="/member/stock-card">Riwayat Stok</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/member/total-stock">Total Stok</a>
+            </li>
+
+          </ul>
+        </li>
+      <% } %>
+
+      <% if (session.mode == 'Stokist' && session.isStockiest) { %>
+        <li class="nav-item dropdown">
+          <a class="nav-link"
+          href="#collapse-transaction"
+          data-toggle="collapse">
+            Transaksi
+            <i class="fa fa-caret-down"></i>
+          </a>
+
+          <ul id="collapse-transaction" class="collapse">
+
+            <li class="nav-item">
+              <a class="sub-link" href="/member/stock-order">Order Stok</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/member-order">POS Stokist</a>
+            </li>
+
+          </ul>
+        </li>
+      <% } %>
+
+      <% if (session.mode == 'Member') { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/member/stockiest-product">Produk Stokist Tersedia</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/member/order-stockiest">Order Stokist</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/member/order-pin">Order PIN</a>
+        </li>
+      <% } %>
+
+      <% if (session.mode == 'Stokist' && session.isStockiest) { %>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link"
+          href="#collapse-4"
+          data-toggle="collapse">
+            Order Masuk
+            <i class="fa fa-caret-down"></i>
+          </a>
+
+          <ul id="collapse-4" class="collapse">
+
+            <li class="nav-item">
+              <a class="sub-link" href="/member/new-order">Order Baru</a>
+            </li>
+            <!--
+            <li class="nav-item">
+              <a class="sub-link" href="/member/confirmed-order">Order Dikonfirmasi</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/paid-order">Order Dibayar</a>
+            </li>
+            -->
+            <li class="nav-item">
+              <a class="sub-link" href="/member/processed-order">Order Diproses</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/delivered-order">Order Delivered</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/expired-order">Order Expire</a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link"
+          href="#collapse-pin-order"
+          data-toggle="collapse">
+            PIN Order Masuk
+            <i class="fa fa-caret-down"></i>
+          </a>
+
+          <ul id="collapse-pin-order" class="collapse">
+            <li class="nav-item">
+              <a class="sub-link" href="/member/new-pin-order">PIN Order Baru</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/approved-pin-order">PIN Order Approved</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/expired-pin-order">PIN Order Expire</a>
+            </li>
+          </ul>
+        </li>
+
+      <% } %>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link"
+        href="#collapse-5"
+        data-toggle="collapse">
+          Member
+          <i class="fa fa-caret-down"></i>
+        </a>
+
+        <ul id="collapse-5" class="collapse">
+          <li class="nav-item">
+            <a class="sub-link" href="/member/pin-stock-card">Riwayat PIN</a>
+          </li>
+          <li class="nav-item">
+            <a class="sub-link" href="/member/pin-stock">Stok PIN</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="sub-link" href="/member/register">Registrasi</a>
+          </li>
+          <li class="nav-item">
+            <a class="sub-link" href="/member/pending">Member Pending</a>
+          </li>
+
+        </ul>
+      </li>
+
+      <% if (session.mode == 'Stokist' && session.isStockiest) { %>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link"
+          href="#collapse-6"
+          data-toggle="collapse">
+            Laporan
+            <i class="fa fa-caret-down"></i>
+          </a>
+
+          <ul id="collapse-6" class="collapse">
+
+            <li class="nav-item">
+              <a class="sub-link" href="/member/laporan-penjualan">Laporan Penjualan Produk</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/laporan-pembelian">Laporan Pembelian Produk</a>
+            </li>
+            <li class="nav-item">
+              <a class="sub-link" href="/member/laporan-best-seller">Laporan Produk Best Seller</a>
+            </li>
+
+          </ul>
+        </li>
+
+      <% } %>
+    </ul>
+  </nav>
+
+</div>
+
+<script>
+  var $scope = $('#MenuView');
+  var currentUrl = '<%= currentUrl %>';
+
+  $scope.find('.nav-item a').each((i, element) => {
+    if($(element).attr('href') == currentUrl) {
+      $(element).css('color', 'black');
+    }
+  });
+
+  $scope.find('.nav-item.dropdown a').each((i, element) => {
+    if($(element).attr('href') == currentUrl) {
+      $(element).parent().parent().addClass('show');
+    }
+  });
+</script>

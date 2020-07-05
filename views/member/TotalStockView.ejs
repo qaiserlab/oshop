@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section class="about-us">
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title">Total Stok</h1>
+
+            <div class="paper">
+              <div class="row">
+                <div class="col-md-12">
+
+                  <table class="table">
+                    <thead>
+                      <th>Produk</th>
+                      <th style="text-align: center">Warna</th>
+                      <th>Ukuran</th>
+                      <th style="text-align: right">Stok</th>
+                    </thead>
+                    <tbody>
+
+                      <% var balance = 0; rsProduct.forEach(row => { balance += (row.in - row.out) %>
+                        <tr>
+                          <td><%= row.product.productId + ' / ' + row.product.productName %></td>
+                          <td style="text-align: center">
+                            <i class="fa fa-square" style="color: <%= row.color %>"></i>
+                          </td>
+                          <td><%= row.size %></td>
+                          <td style="text-align: right"><%= row.balance %></td>
+                        </tr>
+                      <% }); %>
+
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

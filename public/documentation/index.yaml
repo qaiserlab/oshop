@@ -1,0 +1,1643 @@
+swagger: '2.0'
+info:
+  title: Cozmeed API
+  description: |
+    API untuk Cozmeed online store
+    [https://cozmeed.id](http://cozmeed.id)
+  version: 2.0.0
+  contact:
+    email: f.anaturdasa@gmail.com
+host: cozmeed.id
+basePath: /api/v2
+schemes:
+  - https
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+tags:
+- name: account
+  description: Mengenai register, login, logout dan info akun
+- name: master
+  description: Master data yg sering kali digunakan
+- name: cms
+  description: Segala yg berhubungan dengan konten
+- name: member
+  description: Segala yg berhubungan dengan member yg terdaftar
+- name: stockiest
+  description: Segala yg berhubungan dengan stokist yg tersedia
+- name: product
+  description: Menampilkan berbagai macam produk
+- name: cart
+  description: Segala yg berhubungan dengan operasi pada keranjang belanja
+- name: order
+  description: Segala yg berhubungan dengan operasi order belanja
+- name: shipment
+  description: Mengambil data yg berhubungan dengan ekspedisi pengiriman
+- name: genealogy
+  description: Mengambil data yg berhubungan dengan jaringan member
+- name: bonus
+  description: Mengambil data yg berhubungan dengan bonus dan insentif
+- name: ewallet
+  description: Mengambil data yg berhubungan dengan ewallet
+- name: transaction-history
+  description: Mengambil data yg berhubungan dengan riwayat belanja
+- name: stock
+  description: Mengambil data yg berhubungan dengan stok produk
+- name: pin
+  description: Mengambil data yg berhubungan dengan PIN
+- name: report
+  description: Mengambil data laporan
+paths:
+  /account:
+    get:
+      tags:
+      - account
+      summary: Mengambil info detail Akun
+      operationId: accountInfo
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+    put:
+      tags:
+      - account
+      summary: Mengubah profile akun yg sedang aktif (login)
+      operationId: updateProfile
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/Account'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+        - auth: []
+  /account/change-password:
+    put:
+      tags:
+      - account
+      summary: Mengubah password akun yg sedang aktif (login)
+      operationId: changePassword
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ChangePassword'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+        - auth: []
+  /account/signin:
+    post:
+      tags:
+      - account
+      summary: Login sebagai member
+      operationId: signin
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/Signin'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+  /account/stockiest/signin:
+    post:
+      tags:
+      - account
+      summary: Login sebagai stokist
+      operationId: stockiestSignin
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/Signin'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+  /account/signout:
+    post:
+      tags:
+      - account
+      summary: Logout dari aplikasi
+      operationId: signout
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /account/register:
+    post:
+      tags:
+      - account
+      summary: Mendaftar sebagai member
+      operationId: register
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/Register'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+  /account/member/register:
+    post:
+      tags:
+      - account
+      summary: Member mendaftarkan member
+      operationId: memberRegisterMember
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/MemberRegister'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+        - auth: []
+  /account/forgot-password:
+    post:
+      tags:
+      - account
+      summary: |
+        Fasilitas forgot password, dengan mengirim username/email maka sistem
+        akan memberikan email untuk melakukan reset Password
+      operationId: forgotPassword
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ForgotPassword'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+  /account/reset-password:
+    post:
+      tags:
+      - account
+      summary: |
+        Untuk melakukan reset password, harus menyertakan data berupa token
+        yg didapat dari email setelah mengirimkan permintaan forgot password
+      operationId: resetPassword
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ResetPassword'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+  /bank:
+    get:
+      tags:
+      - master
+      summary: Mengambil list data rekening bank Cozmeed
+      operationId: getCozmeedBankAccounts
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /bank/list:
+    get:
+      tags:
+      - master
+      summary: Mengambil list data rekening bank yg ada di Indonesia
+      operationId: getBankList
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /menu:
+    get:
+      tags:
+      - cms
+      summary: Mengambil list data menu
+      operationId: getMenuList
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /banner:
+    get:
+      tags:
+      - cms
+      summary: Mengambil list data banner
+      operationId: getBannerList
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /news:
+    get:
+      tags:
+      - cms
+      summary: Mengambil list data berita
+      operationId: getNewsList
+      parameters:
+      - name: skip
+        in: query
+        type: integer
+        description: Start mula baris berita (dimulai dari 0)
+      - name: range
+        in: query
+        type: integer
+        description: Jumlah baris berita yg diambil dari start mula
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /page:
+    get:
+      tags:
+      - cms
+      summary: Mengambil list halaman
+      operationId: getPageList
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /page/find-one:
+    get:
+      tags:
+      - cms
+      summary: Mendapatkan halaman dengan menggunakan slug halaman
+      operationId: findOnePage
+      parameters:
+      - name: slug
+        in: query
+        type: string
+        description: Slug halaman yg dicari
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /member/pending:
+    get:
+      tags:
+      - member
+      summary: Mencari member yg masih pending (belum di approve)
+      operationId: findMemberPending
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /member/find:
+    get:
+      tags:
+      - member
+      summary: Mencari member dengan Member ID yg mendekati
+      operationId: findMember
+      parameters:
+      - name: memberId
+        in: query
+        type: string
+        description: Keyword/Member ID yg dicari
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /member/find-one:
+    get:
+      tags:
+      - member
+      summary: Mendapatkan data member dengan menggunakan Member ID
+      operationId: findOneMember
+      parameters:
+      - name: memberId
+        in: query
+        type: string
+        description: Member ID yg dicari
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /stockiest:
+    get:
+      tags:
+      - stockiest
+      summary: Mendapatkan seluruh stockist yg tersedia
+      operationId: getStockiest
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /stockiest/find:
+    get:
+      tags:
+      - stockiest
+      summary: Mencari stokist dengan Member ID yg mendekati
+      operationId: findStockiest
+      parameters:
+      - name: memberId
+        in: query
+        type: string
+        description: Keyword/Member ID yg dicari
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /stockiest/find-one:
+    get:
+      tags:
+      - stockiest
+      summary: Mendapatkan data stockiest dengan menggunakan Member ID
+      operationId: findOneStockiest
+      parameters:
+      - name: memberId
+        in: query
+        type: string
+        description: Member ID yg dicari
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /product:
+    get:
+      tags:
+      - product
+      summary: Mengambil list data produk
+      operationId: getProductList
+      parameters:
+      - name: categorySlug
+        in: query
+        type: string
+        description: Slug dari URL kategori produk
+      - name: skip
+        in: query
+        type: integer
+        description: Start mula baris produk (dimulai dari 0)
+      - name: range
+        in: query
+        type: integer
+        description: Jumlah baris produk yg diambil dari start mula
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /product/new-products:
+    get:
+      tags:
+      - product
+      summary: Mengambil list data produk terbaru
+      operationId: getNewProductList
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /product/best-sellers:
+    get:
+      tags:
+      - product
+      summary: Mengambil list data produk terbaru
+      operationId: getBestSellerList
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /product/search:
+    get:
+      tags:
+      - product
+      summary: Mencari produk dengan Nama Produk yg mendekati
+      operationId: searchProduct
+      parameters:
+      - name: productName
+        in: query
+        type: string
+        description: Keyword/Nama Produk yg dicari
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /product/find:
+    get:
+      tags:
+      - product
+      summary: Mencari produk dengan ID Produk yg mendekati
+      operationId: findProduct
+      parameters:
+      - name: productId
+        in: query
+        type: string
+        description: Keyword/ID Produk yg dicari
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /product/find-one:
+    get:
+      tags:
+      - product
+      summary: Mendapatkan data product dengan menggunakan ID Produk
+      operationId: findOneProduct
+      parameters:
+      - name: productId
+        in: query
+        type: string
+        description: ID Produk yg dicari
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /product/find-stock:
+    get:
+      tags:
+      - product
+      summary: |
+        Mencari produk member tertentu dengan ID Produk yg mendekati beserta keterangan jumlah stok
+      operationId: findProductStock
+      parameters:
+      - name: memberId
+        in: query
+        type: string
+        description: ID Member yg ingin diketahui jumlah stoknya
+      - name: productId
+        in: query
+        type: string
+        description: Keyword/ID Produk yg dicari
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /product/find-one-stock:
+    get:
+      tags:
+      - product
+      summary: |
+        Mendapatkan data product member tertentu dengan menggunakan ID Produk
+        lengkap dengan keterangan jumlah stok produk tersebut
+      operationId: findOneProductStock
+      parameters:
+      - name: memberId
+        in: query
+        type: string
+        description: ID Member yg ingin diketahui jumlah stoknya
+      - name: productId
+        in: query
+        type: string
+        description: ID Produk yg dicari
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /product-category:
+    get:
+      tags:
+      - product
+      summary: Mengambil list data produk
+      operationId: getProductCategoryList
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /cart:
+    get:
+      tags:
+      - cart
+      summary: Mengambil list data keranjang belanja
+      operationId: getCartList
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+    post:
+      tags:
+      - cart
+      summary: Menambahkan item ke keranjang belanja
+      operationId: addToCart
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/CartItem'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+        - auth: []
+    put:
+      tags:
+      - cart
+      summary: Mengubah/menimpa data keranjang belanja
+      operationId: updateCart
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/CartItemUpdate'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+        - auth: []
+    delete:
+      tags:
+      - cart
+      summary: Menghapus item dari keranjang belanja
+      operationId: deleteCartItem
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/CartDelete'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+        - auth: []
+  /order:
+    post:
+      tags:
+      - order
+      summary: Melakukan order pemesanan barang
+      operationId: submitOrder
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/Checkout'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+        - auth: []
+  /order/confirm:
+    put:
+      tags:
+      - order
+      summary: Melakukan konfirmasi pembayaran
+      operationId: confirmPayment
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ConfirmPayment'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+        - auth: []
+  /order/order-stockiest:
+    post:
+      tags:
+      - order
+      summary: Melakukan order pemesanan barang ke stokist tertentu
+      operationId: orderStockiest
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/OrderStockiest'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+        - auth: []
+  /order/member-order:
+    post:
+      tags:
+      - order
+      summary: Stokist menginputkan order member utk membeli barang sendiri (POS Stokist)
+      operationId: posStokist
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/PosStokist'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+        - auth: []
+  /stockiest-order:
+    post:
+      tags:
+      - order
+      summary: Stokist melakukan order ke Cozmeed
+      operationId: stockiestOrder
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/StockiestOrder'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+        - auth: []
+  /order/new:
+    get:
+      tags:
+      - order
+      summary: Mengambil list data order terbaru
+      operationId: getNewOrder
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /order/processed:
+    get:
+      tags:
+      - order
+      summary: Mengambil list data order diproses
+      operationId: getProcessedOrder
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /order/delivered:
+    get:
+      tags:
+      - order
+      summary: Mengambil list data order delivered
+      operationId: getDeliveredOrder
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /order/expired:
+    get:
+      tags:
+      - order
+      summary: Mengambil list data order expire
+      operationId: getExpiredOrder
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /shipment-price:
+    get:
+      tags:
+      - shipment
+      summary: Mendapatkan data harga-harga paket ekspedisi pengiriman
+      operationId: getShipmentPrice
+      parameters:
+      - name: province
+        in: query
+        type: string
+        description: Mendapatkan list berdasar propinsi
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /genealogy/tree:
+    get:
+      tags:
+      - genealogy
+      summary: Mendapatkan data jaringan member Genealogy Tree
+      operationId: getGenealogyTree
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /genealogy/reference:
+    get:
+      tags:
+      - genealogy
+      summary: Mendapatkan data jaringan member Genealogy Reference per level
+      operationId: getGenealogyReference
+      parameters:
+      - name: level
+        in: query
+        type: string
+        description: Mendapatkan list berdasar level
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /bonus/network-growth-incentives:
+    get:
+      tags:
+      - bonus
+      summary: Mendapatkan data insentif pertumbuhan jaringan
+      operationId: networkGrowthIncentives
+      parameters:
+      - name: year
+        in: query
+        type: integer
+        description: Tahun
+      - name: month
+        in: query
+        type: integer
+        description: Bulan (1 s/d 12)
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /bonus/direct-selling-incentives:
+    get:
+      tags:
+      - bonus
+      summary: Mendapatkan data insentif penjualan langsung
+      operationId: directSellingIncentives
+      parameters:
+      - name: year
+        in: query
+        type: integer
+        description: Tahun
+      - name: month
+        in: query
+        type: integer
+        description: Bulan (1 s/d 12)
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /bonus/achievement-incentives:
+    get:
+      tags:
+      - bonus
+      summary: Mendapatkan data insentif prestasi
+      operationId: achievementIncentives
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /bonus/brotherhood-care:
+    get:
+      tags:
+      - bonus
+      summary: Mendapatkan data brotherhood care
+      operationId: brotherhoodCare
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /bonus/profit-sharing-incentives:
+    get:
+      tags:
+      - bonus
+      summary: Mendapatkan data insentif share profit
+      operationId: profitSharingIncentives
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /ewallet:
+    get:
+      tags:
+      - ewallet
+      summary: Mengambil list data ewallet
+      operationId: getEwalletList
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /transaction-history:
+    get:
+      tags:
+      - transaction-history
+      summary: Mengambil list data riwayat belanja
+      operationId: getTransactionHistoryList
+      parameters:
+      - name: from
+        in: query
+        type: string
+        format: date
+        description: Range tanggal
+      - name: to
+        in: query
+        type: string
+        format: date
+        description: Range tanggal
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /stock/history:
+    get:
+      tags:
+      - stock
+      summary: Mengambil list data riwayat stok
+      operationId: getStockHistory
+      parameters:
+      - name: from
+        in: query
+        type: string
+        format: date
+        description: Range tanggal
+      - name: to
+        in: query
+        type: string
+        format: date
+        description: Range tanggal
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /stock/total:
+    get:
+      tags:
+      - stock
+      summary: Mengambil list data total stok
+      operationId: getTotalStock
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /stock/find-by-stockiest:
+    get:
+      tags:
+      - stock
+      summary: Mengambil list data stok produk berdasarkan ID Member stockist
+      operationId: findByStockiest
+      parameters:
+      - name: stockiestId
+        in: query
+        type: string
+        description: ID Member stokist
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /pin/find:
+    get:
+      tags:
+      - pin
+      summary: Mencari list PIN dengan PIN yg mendekati
+      operationId: findPin
+      parameters:
+      - name: pin
+        in: query
+        type: string
+        description: Keyword/PIN yg dicari
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /pin/find-one:
+    get:
+      tags:
+      - pin
+      summary: Mendapatkan detail data PIN
+      operationId: findOnePin
+      parameters:
+      - name: pin
+        in: query
+        type: string
+        description: PIN yg dicari
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+  /pin-stock/history:
+    get:
+      tags:
+      - pin
+      summary: Mengambil list data riwayat PIN member yg sedang login
+      operationId: myPinHistory
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /pin-stock/stock:
+    get:
+      tags:
+      - pin
+      summary: Mengambil list data stok PIN member yg sedang login
+      operationId: myPinStock
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /pin-order:
+    post:
+      tags:
+      - pin
+      summary: Melakukan pemesanan PIN kepada stokist tertentu
+      operationId: pinOrder
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/PinOrder'
+      responses:
+        200:
+          description: |
+           state > success / invalid (berisi list validasi) / failed
+      security:
+        - key: []
+        - auth: []
+  /pin-order/new:
+    get:
+      tags:
+      - pin
+      summary: Mengambil list data PIN order terbaru
+      operationId: getNewPinOrder
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /pin-order/approved:
+    get:
+      tags:
+      - pin
+      summary: Mengambil list data PIN order yg telah di approve
+      operationId: getApprovedPinOrder
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /pin-order/expired:
+    get:
+      tags:
+      - pin
+      summary: Mengambil list data PIN order yg telah expire
+      operationId: getExpiredPinOrder
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /report/stockiest/product-sales:
+    get:
+      tags:
+      - report
+      summary: Laporan penjualan produk (stokist)
+      operationId: getStockiestProductSales
+      parameters:
+      - name: from
+        in: query
+        type: string
+        format: date
+        description: Range tanggal
+      - name: to
+        in: query
+        type: string
+        format: date
+        description: Range tanggal
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /report/stockiest/product-purchase:
+    get:
+      tags:
+      - report
+      summary: Laporan pembelian produk (stokist)
+      operationId: getStockiestProductPurchase
+      parameters:
+      - name: from
+        in: query
+        type: string
+        format: date
+        description: Range tanggal
+      - name: to
+        in: query
+        type: string
+        format: date
+        description: Range tanggal
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  /report/stockiest/best-seller:
+    get:
+      tags:
+      - report
+      summary: Laporan produk best seller (stokist)
+      operationId: getStockiestBestSeller
+      parameters:
+      - name: from
+        in: query
+        type: string
+        format: date
+        description: Range tanggal
+      - name: to
+        in: query
+        type: string
+        format: date
+        description: Range tanggal
+      responses:
+        200:
+          description: |
+           state > success / failed
+      security:
+        - key: []
+        - auth: []
+  # /store/order/{orderId}:
+  #   get:
+  #     tags:
+  #     - store
+  #     summary: Find purchase order by ID
+  #     description: For valid response try integer IDs with value >= 1 and <= 10.\
+  #       \ Other values will generated exceptions
+  #     parameters:
+  #     - name: orderId
+  #       in: path
+  #       description: ID of pet that needs to be fetched
+  #       required: true
+  #       type: integer
+  #       maximum: 10.0
+  #       minimum: 1.0
+  #       format: int64
+  #     responses:
+  #       200:
+  #         description: successful operation
+  #         schema:
+  #           $ref: '#/definitions/Order'
+  #       400:
+  #         description: Invalid ID supplied
+  #       404:
+  #         description: Order not found
+securityDefinitions:
+  key:
+    type: apiKey
+    name: apiKey
+    in: header
+    description: |
+     Untuk mendapatkan izin API Key harus selalu disertakan di header tiap request, 
+     berikut ini API Key yg berlaku;
+  
+         c0zm33d-p1a
+  auth:
+    type: apiKey
+    name: authKey
+    in: header
+    description: |
+     Auth Key digunakan di sejumlah API yg membutuhkan level hak akses lebih tinggi
+     yaitu API yg hanya boleh diakses setelah melakukan login.
+     Auth Key bisa didapatkan dengan mengambil nilai balik API account/login yg akan
+     mengembalikan token sebagai Auth Key jika login dilakukan dengan benar, 
+     hingga kemudian token tersebut dapat 
+     disimpan guna selalu disertakan di header tiap request.
+     
+definitions:
+  Account:
+    type: object
+    properties:
+      email:
+        type: string
+        example: dono@kasino.com
+      firstName:
+        type: string
+        example: Dono
+      lastName:
+        type: string
+        example: Kasino
+      birthDate:
+        type: string
+        format: date
+        example: 2000-10-10
+      gender:
+        type: string
+        example: Laki-laki / Perempuan
+      phoneNumber:
+        type: string
+        example: 0821001001001
+      address:
+        type: string
+        example: Jl. Bayam Blok D4
+      province:
+        type: string
+        example: Jawa Barat
+      city:
+        type: string
+        example: Bandung (Kota)
+      district:
+        type: string
+        example: Arcamanik
+      postalCode:
+        type: string
+  Signin:
+    type: object
+    properties:
+      username:
+        type: string
+        example: C00000005
+      password:
+        type: string
+  Register:
+    type: object
+    properties:
+      sponsorId:
+        type: string
+        example: C00000005
+      username:
+        type: string
+        example: C00000001
+      firstName:
+        type: string
+        example: Dono
+      lastName:
+        type: string
+        example: Kasino
+      email:
+        type: string
+        example: dono@kasino.com
+      phoneNumber:
+        type: string
+        example: 0821001001001
+      password:
+        type: string
+      retypePassword:
+        type: string
+      bank:
+        type: string
+      accountNumber:
+        type: string
+      accountName:
+        type: string
+  MemberRegister:
+    type: object
+    properties:
+      pin:
+        type: string
+      serialNumber:
+        type: string
+      username:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      phoneNumber:
+        type: string
+      password:
+        type: string
+      retypePassword:
+        type: string
+      bank:
+        type: string
+      accountNumber:
+        type: string
+      accountName:
+        type: string
+      sponsorId:
+        type: string
+      uplineId:
+        type: string
+      position:
+        type: integer
+  ForgotPassword:
+    type: object
+    properties:
+      username:
+        type: string
+        example: C00000005
+  ResetPassword:
+    type: object
+    properties:
+      token:
+        type: string
+      password:
+        type: string
+      retypePassword:
+        type: string
+  ChangePassword:
+    type: object
+    properties:
+      oldPassword:
+        type: string
+      newPassword:
+        type: string
+      retypePassword:
+        type: string
+  CartItem:
+    type: object
+    properties:
+      productId:
+        type: string
+      qty:
+        type: integer
+        format: int32
+        example: 1
+      selectedGroup:
+        type: object
+        properties:
+          color:
+            type: string
+          size:
+            type: string
+          price:
+            type: integer
+  CartItemUpdate:
+    type: object
+    properties:
+      _id:
+        type: string
+      qty:
+        type: integer
+        format: int32
+        example: 1
+      selectedGroup:
+        type: object
+        properties:
+          color:
+            type: string
+          size:
+            type: string
+          price:
+            type: integer
+  CartDelete:
+    type: object
+    properties:
+      productId:
+        type: string
+      color:
+        type: string
+      size:
+        type: string
+  Checkout:
+    type: object
+    properties:
+      code:
+        type: string
+      memberId:
+        type: string
+      memberName:
+        type: string
+      firstName:
+        type: string
+        example: Dono
+      lastName:
+        type: string
+        example: Kasino
+      address:
+        type: string
+        example: Jl. Bayam Blok D4
+      province:
+        type: string
+        example: Jawa Barat
+      city:
+        type: string
+        example: Bandung (Kota)
+      district:
+        type: string
+        example: Arcamanik
+      postalCode:
+        type: string
+        example: 3158
+      phoneNumber:
+        type: string
+        example: 0821001001001
+      dropship:
+        type: object
+        properties:
+          firstName:
+            type: string
+            example: Dono
+          lastName:
+            type: string
+            example: Kasino
+          address:
+            type: string
+            example: Jl. Bayam Blok D4
+          province:
+            type: string
+            example: Jawa Barat
+          city:
+            type: string
+            example: Bandung (Kota)
+          district:
+            type: string
+            example: Arcamanik
+          postalCode:
+            type: string
+            example: 3158
+          phoneNumber:
+            type: string
+            example: 0821001001001
+      stockiestId:
+        type: string
+      courier:
+        type: string
+      shippingMethod:
+        type: string
+      paymentMethod:
+        type: string
+      cart:
+        type: array
+        items:
+          type: object
+          properties:
+            productName:
+              type: string
+            slug:
+              type: string
+            productId:
+              type: string
+            weight:
+              type: integer
+            point:
+              type: integer
+            overview:
+              type: string
+            description:
+              type: string
+            sizeGuide:
+              type: string
+            publication:
+              type: string
+      uniqueCode:
+        type: integer
+        format: int32
+      shipmentCost:
+        type: integer
+        format: int32
+  ConfirmPayment:
+    type: object
+    properties:
+      code:
+        type: string
+        description: |
+          Kode konfirmasi yg didapat melalui email setelah melakukan order
+      bankSender:
+        type: string
+        description: Dapatkan list banknya di api /bank/list
+      fullName:
+        type: string
+      bankDestination:
+        type: string
+        description: Dapatkan list rekeningnya di api /bank
+      amount:
+        type: integer
+        description: Jumlah uang yg ditransfer
+      confirmDate:
+        type: string
+        format: date
+  OrderStockiest:
+    type: object
+    properties:
+      stockiestId:
+        type: string
+        description: ID Member stokist yg di order
+      cart:
+        type: array
+        items:
+          type: object
+          properties:
+            productName:
+              type: string
+            slug:
+              type: string
+            productId:
+              type: string
+            weight:
+              type: integer
+            point:
+              type: integer
+            overview:
+              type: string
+            description:
+              type: string
+            sizeGuide:
+              type: string
+            publication:
+              type: string
+  StockiestOrder:
+    type: object
+    properties:
+      memberId:
+        type: string
+      cart:
+        type: array
+        items:
+          type: object
+          properties:
+            productName:
+              type: string
+            slug:
+              type: string
+            productId:
+              type: string
+            weight:
+              type: integer
+            point:
+              type: integer
+            overview:
+              type: string
+            description:
+              type: string
+            sizeGuide:
+              type: string
+            publication:
+              type: string
+  PosStokist:
+    type: object
+    properties:
+      cart:
+        type: array
+        items:
+          type: object
+          properties:
+            productName:
+              type: string
+            slug:
+              type: string
+            productId:
+              type: string
+            weight:
+              type: integer
+            point:
+              type: integer
+            overview:
+              type: string
+            description:
+              type: string
+            sizeGuide:
+              type: string
+            publication:
+              type: string
+  PinOrder:
+    type: object
+    properties:
+      stockiestId:
+        type: string
+        description: ID Member stokist yg di order
+      qty:
+        type: integer
+        description: Jumlah PIN yg dipesan
+      

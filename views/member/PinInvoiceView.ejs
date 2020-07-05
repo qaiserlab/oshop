@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="PinInvoiceView" class="about-us">
+    <div v-cloak class="container">
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <ui-alert :data-source="result.data"
+          :display="result.state == 'invalid'"
+          @close="result.state = ''">
+            {{ result.message }}
+          </ui-alert>
+
+          <div class="about-us-content">
+            <h1 class="member-title">PIN Invoice {{ form.code }}</h1>
+
+            <div class="paper">
+
+              <div class="invoice">
+
+                <div class="row">
+                  <div class="col-md-3">
+                    Tanggal Order
+                  </div>
+                  <div class="col-md-3">
+                    <b>{{ form.orderDate_ }}</b>
+                  </div>
+
+                  <div class="col-md-6" style="text-align: right">
+                    <div class="badge badge-primary">{{ form.status }}</div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-3">
+                    Tanggal Expire
+                  </div>
+                  <div class="col-md-3">
+                    <b>{{ form.dueDate_ }}</b>
+                  </div>
+
+                </div>
+
+                <br>
+
+                <div class="row">
+                  <div class="col-md-3">
+                    Pemesan
+                  </div>
+                  <div class="col-md-9">
+                    <b>{{ form.memberId }} / {{ form.member.firstName }} {{ form.member.lastName }}</b>
+                  </div>
+                </div>
+
+                <br>
+
+                <div class="row">
+                  <div class="col-md-12">
+
+                    <table class="table">
+                      <thead>
+                        <th>Harga</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                      </thead>
+                      <tbody>
+
+                        <tr>
+                          <td>{{form.price_}}</td>
+                          <td>{{form.qty}}</td>
+                          <td>{{form.total_}}</td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+
+                  </div>
+                </div>
+
+
+              </div>
+
+              <div v-if="form.status != 'Approved'" class="button-group">
+                <div class="row">
+                  <div class="col-md-12">
+                    <hr>
+                    <ui-button type="button"
+                    :loading="loading"
+                    @click="approve">Approve</ui-button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var PinInvoiceView = new Vue({
+      el: '#PinInvoiceView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data() {
+        return {
+          loading: false,
+          result: {
+            state: '',
+            message: '',
+            data: { errors: {} },
+          },
+          form: <%- JSON.stringify(rowPinOrder) %> || {},
+        };
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_approve">
+        ******************/
+        approve() {
+          this.loading = true;
+
+          let url = '/api/pin-order/approve/' + this.form.code;
+
+          axios.put(url).then(response => {
+
+            if (response.data.state == 'success')
+              window.location.reload();
+            else
+              this.splash = true;
+            this.result = response.data;
+            this.loading = false;
+          });
+        },
+      },
+
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

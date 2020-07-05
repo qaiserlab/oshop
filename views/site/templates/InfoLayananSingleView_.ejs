@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../layouts/HeadLayout %>
+<body>
+  <% include ../../layouts/HeaderLayout %>
+
+  <div class="wrap-banner">
+    <div class="container">
+      <div class="banner-red">
+        <div class="row">
+          <div class="col-sm-4 col-md-5 col-lg-4">
+            <div class="wrap-vertical-align">
+              <div class="vertical-align vertical-bottom">
+                <h1>
+                  The Heart
+                  <br>
+                  Of Adventurer
+                </h1>
+                <p>
+                  Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-8 col-md-7 col-lg-8">
+            <div class="banner-about-us">
+              <div class="overlay"></div>
+              <img src="/assets/images/banner-3.jpg" class="img-fluid" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="about-us">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <div class="wrap-nav-about-us">
+            <ul class="nav nav-pills nav-fill">
+
+              <% if (bottomMenu3.menu) { %>
+              <% Object.keys(bottomMenu3.menu).reverse().forEach(key => { var row = bottomMenu3.menu[key] %>
+                <li class="nav-item"><a class="nav-link" href="<%= row.permalink %>"><%= row.title %></a></li>
+              <% }); %>
+              <% } %>
+
+            </ul>
+          </div>
+        </div>
+
+        <% if (rowPage.featuredImage) { %>
+          <div class="col-sm-3 col-md-4 col-lg-3">
+            <div class="about-us-content">
+              <img src="<%= rowPage.featuredImage_ %>" />
+            </div>
+          </div>
+
+        <div class="col-sm-9 col-md-8 col-lg-9">
+
+        <% } else { %>
+
+        <div class="col-sm-12 col-md-12 col-lg-12">
+        <% } %>
+          <div class="about-us-content">
+            <h1><%= rowPage.title %></h1>
+            <%- rowPage.content %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <% include ../../layouts/FooterLayout %>
+  <% include ../../layouts/FootLayout %>
+</body>
+</html>

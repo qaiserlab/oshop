@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section class="about-us">
+    <div v-cloak class="container">
+
+      <div id="LaporanPenjualanProdukDetailView" class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title"><%= title %></h1>
+
+            <div class="paper">
+
+              <ui-datepicker v-model="form.fromDate"
+              style="display: inline-block"></ui-datepicker>
+              <ui-datepicker v-model="form.toDate"
+              style="display: inline-block">s/d</ui-datepicker>
+              <ui-button @click="generateReport"
+              :loading="loading"
+              style="display: inline-block">Generate</ui-button>
+              <hr>
+
+              <table>
+                <tr>
+                  <th>SKU</th>
+                  <td>: </td>
+                  <td><%= rowProduct.skuNumber %></td>
+                </tr>
+                <tr>
+                  <th>Product</th>
+                  <td>: </td>
+                  <td><%= rowProduct.productName %></td>
+                </tr>
+              </table>
+              <br>
+
+              <table class="table table-bordered">
+                <thead>
+                  <th>Tanggal</th>
+                  <th>Ukuran</th>
+                  <th>Warna</th>
+                  <th>Harga</th>
+                  <th>Qty</th>
+                  <th style="text-align: right">Sub Total</th>
+                </thead>
+                <tbody>
+
+                  <tr v-for="row in rs">
+                    <td>{{ row.orderDate_ }}</td>
+                    <td>{{ row.size }}</td>
+                    <td>{{ row.color }}</td>
+                    <td>{{ row.price_ }}</td>
+                    <td>{{ row.qty }}</td>
+                    <td style="text-align: right">{{ row.subTotal_ }}</td>
+                  </tr>
+
+                </tbody>
+                <tfoot>
+                  <td colspan="7" style="text-align: right">
+                    <b>Total: </b>{{ total }}
+                  </td>
+                </tfoot>
+              </table>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var vmLaporanPenjualanProdukDetailView = new Vue({
+      el: '#LaporanPenjualanProdukDetailView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        loading: false,
+        title: '<%= title %>',
+
+        rowProduct: <%- JSON.stringify(rowProduct) %>,
+        rs: <%- JSON.stringify(rsProductSales) %>,
+        total: '<%= total %>',
+
+        form: {
+          fromDate: '<%= fromDate %>',
+          toDate: '<%= toDate %>',
+        },
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+        selectedDate() {
+          return $.param({
+            fromDate: this.form.fromDate,
+            toDate: this.form.toDate,
+          });
+        },
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted() {
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_generateReport">
+        ******************/
+        generateReport() {
+          this.loading = true;
+
+          window.location = '/member/laporan-penjualan-produk?' + this.selectedDate;
+        },
+
+      },
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

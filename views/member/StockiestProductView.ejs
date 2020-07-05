@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="StockiestProductView" class="about-us">
+    <div v-cloak class="container">
+
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <div class="about-us-content">
+            <h1 class="member-title"><%= title %></h1>
+
+            <div class="paper">
+
+              <div class="row">
+                <div class="col-md-11">
+                  <div class="ui-textbox" style="position: relative">
+                    <input v-model="form.stockiestId"
+                    ref="stockiestId"
+                    placeholder="Masukan ID Stokist..."
+                    class="awesomplete form-control"
+                    @keyup="findMember"
+                    @keyup.enter="forceAwesompleteValue('stockiestId', $event)"
+                    @blur="forceAwesompleteValue('stockiestId', $event)">
+
+                    <span v-if="memberLoading"
+                    style="position: absolute; right: 12px; bottom: 8px" class="icon">
+                      <i class="fa fa-spin fa-refresh"></i>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="col-md-1">
+                  <ui-button @click="submit" :loading="loading" style="display: inline-block">Cari</ui-button>
+                </div>
+              </div>
+
+              <table class="table">
+                <thead>
+                  <th>Produk</th>
+                  <th style="text-align: center">Warna</th>
+                  <th>Ukuran</th>
+                  <th style="text-align: right">Stok</th>
+                </thead>
+                <tbody>
+
+                  <% var balance = 0; rsProduct.forEach(row => { balance += (row.in - row.out) %>
+                    <tr>
+                      <td><%= row.product.productId + ' / ' + row.product.productName %></td>
+                      <td style="text-align: center">
+                        <i class="fa fa-square" style="color: <%= row.color %>"></i>
+                      </td>
+                      <td><%= row.size %></td>
+                      <td style="text-align: right"><%= row.balance %></td>
+                    </tr>
+                  <% }); %>
+
+                </tbody>
+              </table>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var StockiestProductView = new Vue({
+      el: '#StockiestProductView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data: {
+        loading: false,
+        memberLoading: false,
+        stockiestAwesomplete: '',
+
+        rsMember: [],
+
+        form: {
+          stockiestId: '<%= stockiestId %>',
+        },
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+
+        /******************
+        <id="_rsMember_">
+        ******************/
+        rsMember_() {
+          return this.rsMember.map(row => row.memberId + '/' + row.member.fullName);
+        },
+
+        /******************
+        <id="_stockiestId">
+        ******************/
+        stockiestId() {
+          return this.form.stockiestId.split('/')[0];
+        },
+
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted() {
+        this.stockiestAwesomplete = new Awesomplete(this.$refs.stockiestId);
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_forceAwesompleteValue">
+        ******************/
+        forceAwesompleteValue(textboxId, event) {
+          var value = event.currentTarget.value;
+          this.form[textboxId] = event.currentTarget.value;
+        },
+
+        /******************
+        <id="_findMember">
+        ******************/
+        findMember(event) {
+
+          if ((event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 13)) {
+            if (event.currentTarget.value.length == 2) {
+              this.memberLoading = true;
+
+              axios.get('/api/stockiest/find/' + this.form.stockiestId).then(response => {
+                this.rsMember = response.data.data;
+
+                this.stockiestAwesomplete.list = this.rsMember_;
+                this.stockiestAwesomplete.evaluate();
+
+                this.memberLoading = false;
+              });
+            }
+          }
+
+        },
+
+        /******************
+        <id="_submit">
+        ******************/
+        submit() {
+          window.location = '/member/stockiest-product?stockiestId=' + this.stockiestId;
+        },
+
+      },
+
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

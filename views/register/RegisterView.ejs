@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <nav id="breadcrumb">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="/"><i class="fa fa-home"></i></a>
+        </li>
+        <li class="breadcrumb-item active">Registrasi</li>
+      </ol>
+    </div>
+  </nav>
+
+  <section id="RegisterView" class="about-us">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+
+          <div class="about-us-content">
+            <h1 class="member-title">Pendaftaran Member</h1>
+            <div class="paper">
+
+              <!-- <ui-panel title="Pilih Tipe Member" type="primary"> -->
+                <div class="row">
+
+                  <div class="col-md-3">
+                  </div>
+
+                  <div class="col-md-6">
+                    <h4>Daftar sebagai Premium Member</h4>
+                    <!-- <p> -->
+                      Keuntungan premium member:
+                      <ul>
+                        <li>Checkout belanja yang cepat dan mudah</li>
+                        <li>Akses cepat untuk melihat status dan history belanja</li>
+                        <li>Bonus Sponsor</li>
+                        <li><em>Personal sales commission</em></li>
+                        <li>Bonus Transaksi</li>
+                        <li>Bonus Afiliasi Produk</li>
+                        <li>Reward</li>
+                      </ul>
+                      <ui-button href="/register/premium">Daftar</ui-button>
+                    <!-- </p> -->
+                  </div>
+
+                </div>
+              <!-- </ui-panel> -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var RegisterView = new Vue({
+      el: '#RegisterView',
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>

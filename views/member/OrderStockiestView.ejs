@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../layouts/HeadLayout %>
+<body>
+  <% include ../layouts/HeaderLayout %>
+
+  <section id="MemberOrderView" class="about-us">
+    <div v-cloak class="container">
+      <div class="row">
+
+        <div class="col-sm-3 col-md-3 col-lg-3">
+          <% include ./MenuView %>
+        </div>
+
+        <div class="col-sm-9 col-md-9 col-lg-9">
+          <ui-splash :display="splash">
+            {{ result.message }}
+          </ui-splash>
+
+          <div class="about-us-content">
+            <h1 class="member-title">Order Ke Stokist</h1>
+
+            <div class="paper">
+
+              <div class="row">
+                <div class="col-md-12">
+
+                  <div class="ui-textbox" style="position: relative">
+                    <input v-model="form.stockiestId"
+                    ref="stockiestId"
+                    placeholder="Masukan ID Stokist..."
+                    class="awesomplete form-control"
+                    @keyup="findMember($event);searchMember($event)"
+                    @keyup.enter="forceAwesompleteValue('stockiestId', $event);searchMember($event)"
+                    @blur="forceAwesompleteValue('stockiestId', $event);searchMember($event)">
+
+                    <span v-if="memberLoading"
+                    style="position: absolute; right: 12px; bottom: 8px" class="icon">
+                      <i class="fa fa-spin fa-refresh"></i>
+                    </span>
+                  </div>
+
+                  <sup class="error-line" style="top: -6px">
+                    {{ result.data.errors.stockiestId?result.data.errors.stockiestId.message:'' }}
+                  </sup>
+
+                  <sup v-if="form.bank">
+                    <b>Rekening: </b>
+                    {{ form.bank }} - {{ form.accountNumber }} a/n {{ form.accountName }}
+                    <br>&nbsp;
+                  </sup>
+                </div>
+
+              </div>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="ui-textbox" style="position: relative">
+                    <input v-model="form.productId"
+                    ref="productId"
+                    placeholder="Masukan ID Produk..."
+                    class="awesomplete form-control"
+                    @keyup="findProduct"
+                    @blur="forceAwesompleteValue('productId', $event);searchProduct()">
+
+                    <span v-if="productLoading"
+                    style="position: absolute; right: 12px; bottom: 8px" class="icon">
+                      <i class="fa fa-spin fa-refresh"></i>
+                    </span>
+                  </div>
+
+                  <sup class="error-line" style="top: -6px">
+                    {{ result.data.errors.productId?result.data.errors.productId.message:'' }}
+                  </sup>
+                </div>
+
+                <div class="col-md-5">
+                  <div style="position: relative" class="form-group">
+                    <b>Warna</b>
+                    <div style="height: 30px; border-bottom: dashed silver 1px">
+                      <span v-for="(row, color) in rowProductActive.priceGroup">
+                        <input v-model="form.color"
+                        :value="color"
+                        type="radio">
+                        <i class="fa fa-square" :style="'color: ' + color"></i>
+                        &nbsp;
+                      </span>
+                    </div>
+                    <sup class="error-line">
+                      {{ result.data.errors.color?result.data.errors.color.message:'' }}
+                    </sup>
+                  </div>
+                </div>
+
+                <div class="col-md-5">
+                  <div style="position: relative" class="form-group">
+                    <b>Ukuran</b>
+                    <div style="height: 30px; border-bottom: dashed silver 1px">
+                      <span v-for="row in rsSize">
+                        <input v-model="form.size"
+                        :value="row.size"
+                        type="radio">
+                        {{ row.size }}
+                        &nbsp;
+                      </span>
+                    </div>
+
+                    <sup class="error-line">
+                      {{ result.data.errors.size?result.data.errors.size.message:'' }}
+                    </sup>
+                  </div>
+                </div>
+
+                <div class="col-md-2">
+                  <b>Stok</b>
+                  <div style="height: 30px; border-bottom: dashed silver 1px">
+                    {{ stock }}
+                  </div>
+
+                  <sup class="error-line">
+                    {{ result.data.errors.balance?result.data.errors.balance.message:'' }}
+                  </sup>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <b>Harga</b>
+                    <div style="height: 30px; border-bottom: dashed silver 1px">
+                      <span v-if="rowSizeActive">{{ rowSizeActive.price_ }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <ui-textbox v-model="form.qty"
+                  only-numeric>Qty</ui-textbox>
+
+                  <sup class="error-line">
+                    {{ result.data.errors.qty?result.data.errors.qty.message:'' }}
+                  </sup>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <b>Sub Total</b>
+                    <div style="height: 30px; border-bottom: dashed silver 1px">
+                      {{ subTotal_ }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-1">
+                  <ui-button @click="addCart" icon="plus"></ui-button>
+                </div>
+
+              </div>
+
+              <div class="row">
+
+
+                <div class="col-md-12">
+                  <sup class="error-line" style="top: -8px">
+                    {{ result.data.errors.cart?result.data.errors.cart.message:'' }}
+                  </sup>
+
+                  <div class="table-cart">
+
+                    <table class="table table-bordered">
+                      <thead>
+                        <th>Produk</th>
+                        <th>Deskripsi</th>
+                        <th>Harga</th>
+                        <th>Qty</th>
+                        <th>Sub Total</th>
+                        <th>Aksi</th>
+                      </thead>
+                      <tbody>
+
+                        <tr v-for="(row, i) in rsCart">
+                          <td>
+                            <div class="img">
+                              <img :src="row.featuredImage_" style="width: 64px; height: 64px">
+                            </div>
+                          </td>
+                          <td>
+                            <div class="color-size">
+                              <div class="product-name">
+                                <b>{{ row.productId }}</b> -
+                                <i class="fa fa-square"
+                                :style="{ color: row.selectedGroup.color }"></i>
+                                <span>{{ row.selectedGroup.size }}</span>
+                                <br>
+                                {{ row.productName }}
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="price">
+                              <div>{{ row.selectedGroup.price_ }}</div>
+                              <small>PV: {{ row.point }}</small>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="total">
+                              <span>{{ row.qty }}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="total">
+                              <div>{{ row.selectedGroup.subTotal_ }}</div>
+                              <small>PV: {{ row.qty * row.point }}</small>
+                            </div>
+                          </td>
+                          <td>
+
+                            <a href="javascript:"
+                            @click="rsCart.splice(i, 1)"
+                            class="btn btn-danger">
+                              <i class="fa fa-close"></i>
+                            </a>
+
+                          </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+
+                    <div style="text-align: right">
+                      <hr>
+                        <div class="form-group">
+                          <b>Total</b>
+                          <div style="padding-bottom: 8px; border-bottom: dashed silver 1px">
+                            <div>{{ total_ }}</div>
+                            <small>Total PV: {{ totalPv }}</small>
+                          </div>
+                        </div>
+
+                        <ui-button @click="submit"
+                        :loading="loading">Submit</ui-button>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+    /******************
+    <id="Vue">
+    ******************/
+    var MemberOrderView = new Vue({
+      el: '#MemberOrderView',
+
+      /******************
+      <id="_data">
+      ******************/
+      data() {
+        return {
+          loading: false,
+          productLoading: false,
+          memberLoading: false,
+          splash: false,
+
+          result: {
+            state: '',
+            message: '',
+            data: { errors: {} },
+          },
+
+          memberAwesomplete: '',
+          productAwesomplete: '',
+
+          rowProductActive: '',
+
+          rsMember: [],
+          rsProduct: [],
+          rsCart: [],
+
+
+          form: {
+            stockiestId: '',
+            productId: '',
+            color: '',
+            size: '',
+            qty: 1,
+            bank: '',
+            accountNumber: '',
+            accountName: '',
+          },
+
+        };
+      },
+
+      /******************
+      <id="_computed">
+      ******************/
+      computed: {
+
+        /******************
+        <id="_stockiestId">
+        ******************/
+        stockiestId() {
+          var xMemberId = this.form.stockiestId.split('/');
+          return xMemberId[0];
+        },
+
+        /******************
+        <id="_productId">
+        ******************/
+        productId() {
+          var xProductId = this.form.productId.split('/');
+          return xProductId[0];
+        },
+
+        /******************
+        <id="_rsMember_">
+        ******************/
+        rsMember_() {
+          return this.rsMember.map(row => row.memberId + '/' + row.member.fullName);
+        },
+
+        /******************
+        <id="_rsProduct_">
+        ******************/
+        rsProduct_() {
+          return this.rsProduct.map(row => row.productId + '/' + row.productName);
+        },
+
+        /******************
+        <id="_rsSize">
+        ******************/
+        rsSize() {
+          let rsSize = [];
+
+          if (this.rowProductActive.productId)
+            rsSize = this.rowProductActive.priceGroup[this.form.color];
+
+          return rsSize;
+        },
+
+        /******************
+        <id="_stock">
+        ******************/
+        stock() {
+          let stock = '';
+
+          if (this.rowProductActive.stockGroup) {
+            if (this.rowProductActive.stockGroup[this.form.color]) {
+
+              if (this.rowProductActive.stockGroup[this.form.color][this.form.size]) {
+                stock = this.rowProductActive.stockGroup[this.form.color][this.form.size].balance;
+                this.rsCart.forEach(rowCart => {
+                  if (rowCart.productId == this.productId &&
+                    rowCart.selectedGroup.color == this.form.color &&
+                    rowCart.selectedGroup.size == this.form.size
+                  )
+                  stock -= rowCart.qty;
+                });
+              }
+
+            }
+          }
+
+          return stock;
+        },
+
+        /******************
+        <id="_rowSizeActive">
+        ******************/
+        rowSizeActive() {
+          if (!this.rsSize)
+            return '';
+
+          let rowSizeActive;
+
+          this.rsSize.forEach(function (row) {
+            if (row.size == this.form.size)
+              rowSizeActive = row;
+          }.bind(this));
+
+          return rowSizeActive;
+        },
+
+        /******************
+        <id="_subTotal">
+        ******************/
+        subTotal() {
+          let subTotal = 0;
+
+          if (this.rowSizeActive && this.form.qty)
+            subTotal = parseInt(this.form.qty) * parseInt(this.rowSizeActive.price);
+
+          return subTotal;
+        },
+
+        /******************
+        <id="_subTotal_">
+        ******************/
+        subTotal_() {
+          let formattedSubTotal = 'Rp' +
+            this.subTotal
+            .toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+
+          return formattedSubTotal;
+        },
+
+        /******************
+        <id="_totalPv">
+        ******************/
+        totalPv() {
+          let total = 0;
+
+          this.rsCart.forEach(row => {
+            total += (row.qty * row.point);
+          });
+
+          return total;
+        },
+
+        /******************
+        <id="_total">
+        ******************/
+        total() {
+          let total = 0;
+
+          this.rsCart.forEach(row => {
+            total += row.selectedGroup.subTotal;
+          });
+
+          return total;
+        },
+
+        /******************
+        <id="_total_">
+        ******************/
+        total_() {
+          let formattedTotal = 'Rp' +
+            this.total
+            .toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+
+          return formattedTotal;
+        },
+
+      },
+
+      /******************
+      <id="_mounted">
+      ******************/
+      mounted() {
+        this.memberAwesomplete = new Awesomplete(this.$refs.stockiestId);
+        this.productAwesomplete = new Awesomplete(this.$refs.productId);
+      },
+
+      /******************
+      <id="_methods">
+      ******************/
+      methods: {
+
+        /******************
+        <id="_forceAwesompleteValue">
+        ******************/
+        forceAwesompleteValue(textboxId, event) {
+          var value = event.currentTarget.value;
+          this.form[textboxId] = event.currentTarget.value;
+        },
+
+        /******************
+        <id="_findMember">
+        ******************/
+        findMember(event) {
+
+
+          if ((event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 13)) {
+
+            if (event.currentTarget.value.length == 2) {
+              this.memberLoading = true;
+
+              axios.get('/api/stockiest/find/' + this.form.stockiestId).then(response => {
+
+                this.rsMember = response.data.data;
+
+                this.memberAwesomplete.list = this.rsMember_;
+                this.memberAwesomplete.evaluate();
+
+                this.memberLoading = false;
+              });
+            }
+
+          }
+
+        },
+
+        /******************
+        <id="_findProduct">
+        ******************/
+        findProduct(event) {
+
+
+          if ((event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 13)) {
+
+            if (event.currentTarget.value.length == 2) {
+              if (!this.stockiestId) return;
+
+              this.productLoading = true;
+
+              axios.get('/api/product/find-stock/' + this.stockiestId + '/' + this.form.productId).then(response => {
+
+                this.rsProduct = response.data.data;
+
+                this.productAwesomplete.list = this.rsProduct_;
+                this.productAwesomplete.evaluate();
+
+                this.productLoading = false;
+              });
+            }
+            else
+              this.searchProduct();
+
+          }
+
+          if (event.keyCode == 13) {
+            this.forceAwesompleteValue('productId', event);
+            this.searchProduct();
+          }
+        },
+
+        /******************
+        <id="_searchMember">
+        ******************/
+        searchMember(event) {
+
+          this.form.bank = '';
+          this.form.accountNumber = '';
+          this.form.accountName = '';
+
+          if (event.currentTarget.value.length >= 3) {
+            this.memberLoading = true;
+
+            axios.get('/api/stockiest/search/' + this.stockiestId).then(response => {
+
+              if (response.data.state == 'success') {
+
+                var rowMember = response.data.data;
+
+                if (rowMember.bank) this.form.bank = rowMember.bank;
+                if (rowMember.accountNumber) this.form.accountNumber = rowMember.accountNumber;
+                if (rowMember.accountName) this.form.accountName = rowMember.accountName;
+              }
+
+              this.memberLoading = false;
+            });
+          }
+
+        },
+
+        /******************
+        <id="_searchProduct">
+        ******************/
+        searchProduct() {
+
+          this.form.color = '';
+          this.form.size = '';
+          this.form.qty = 1;
+
+          if (this.stockiestId && this.form.productId.length >= 3) {
+            this.productLoading = true;
+            let url = '/api/product/search-stock/' + this.stockiestId + '/' + this.productId;
+
+            axios.get(url).then(response => {
+              if (response.data.state == 'success') {
+                this.rowProductActive = response.data.data;
+                this.rowProductActive.in = response.data.extra.in;
+                this.rowProductActive.out = response.data.extra.out;
+                this.rowProductActive.balance = response.data.extra.balance;
+                this.rowProductActive.stockGroup = response.data.extra.stockGroup;
+              }
+              else
+                this.rowProductActive = '';
+
+              this.productLoading = false;
+            });
+          }
+          else {
+            this.rowProductActive = '';
+          }
+        },
+
+        /******************
+        <id="_addCart">
+        ******************/
+        addCart() {
+
+          let errors = {};
+
+          if (!this.form.productId)
+            errors.productId = { message: 'ID Produk belum diisi' };
+
+          if (!this.form.color)
+            errors.color = { message: 'Warna belum diisi' };
+
+          if (!this.form.size)
+            errors.size = { message: 'Ukuran belum diisi' };
+
+          if (!this.form.qty)
+            errors.qty = { message: 'Qty belum diisi' };
+          else {
+            if (this.form.qty <= 0)
+              errors.qty = { message: 'Qty tidak boleh 0' };
+          }
+
+          if (this.form.qty > this.stock)
+            errors.qty = { message: 'Stok tidak mencukupi' };
+
+          if (Object.keys(errors).length > 0)
+            return this.result = {
+              state: 'invalid',
+              message: 'Please correct following data;',
+              data: { errors },
+            };
+
+          var selectedGroup = {
+            size: this.form.size,
+            price: this.rowSizeActive.price,
+            price_: this.rowSizeActive.price_,
+
+            discount: this.rowSizeActive.discount,
+            quantity: this.rowSizeActive.quantity,
+
+            color: this.form.color,
+            subTotal: this.subTotal,
+            subTotal_: this.subTotal_,
+          };
+
+          this.rsCart.push({
+            productName: this.rowProductActive.productName,
+            slug: this.rowProductActive.slug,
+            productId: this.productId,
+            weight: this.rowProductActive.weight,
+            point: this.rowProductActive.point,
+            overview: this.rowProductActive.overview,
+            description: this.rowProductActive.description,
+            sizeGuide: this.rowProductActive.sizeGuide,
+            publication: this.rowProductActive.publication,
+
+            productCategory: this.rowProductActive.productCategory,
+            newItem: this.rowProductActive.newItem,
+            bestSellerItem: this.rowProductActive.bestSellerItem,
+            saleItem: this.rowProductActive.saleItem,
+
+            featuredImage: this.rowProductActive.featuredImage,
+            featuredImage_: this.rowProductActive.featuredImage_,
+            images: this.rowProductActive.images,
+
+            qty: this.form.qty,
+            selectedGroup,
+            postedOn: this.rowProductActive.postedOn,
+
+          });
+
+          this.result = {
+            state: '',
+            message: '',
+            data: { errors: {} },
+          };
+
+          this.form.productId = '';
+          this.rowProductActive = '';
+          this.form.qty = 1;
+
+          // var body = $("html, body");
+          // body.stop().animate({scrollTop: 0}, 500, 'swing');
+        },
+
+        /******************
+        <id="_submit">
+        ******************/
+        submit() {
+          this.loading = true;
+
+          var url = '/api/order/order-stockiest';
+          var data = {
+            ...this.form,
+          };
+          data.stockiestId = this.stockiestId;
+          data.cart = this.rsCart;
+
+          axios.post(url, data).then(response => {
+
+            this.result = response.data;
+            if (!this.result.data.errors) this.result.data.errors = {};
+
+            if (response.data.state == 'success') {
+
+              this.form.stockiestId = '';
+              this.form.productId = '';
+              this.form.color = '';
+              this.form.size = '';
+              this.form.qty = 1;
+              this.searchProduct();
+
+              this.rsCart = [];
+
+              this.splash = true;
+
+              setTimeout(() => {
+                this.splash = false;
+              }, 2000);
+            }
+
+            this.loading = false;
+
+            var body = $("html, body");
+            body.stop().animate({scrollTop:0}, 500, 'swing');
+          });
+        },
+
+      },
+
+    });
+  </script>
+
+  <% include ../layouts/FooterLayout %>
+  <% include ../layouts/FootLayout %>
+</body>
+</html>
