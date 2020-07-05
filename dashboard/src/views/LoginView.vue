@@ -55,8 +55,8 @@
         },
 
         form: {
-          email: '',
-          password: '',
+          email: 'admin',
+          password: 'admin123',
           type: 'user',
         },
       };
