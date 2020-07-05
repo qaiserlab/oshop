@@ -64,43 +64,44 @@ var Schema = mongoose.Schema({
     required: true,
     validate: {
       validator: function (value, callback) {
+        return new Promise((resolve, reject) => {
+          var UserModel = getUserModel(this.type);
 
-        var UserModel = getUserModel(this.type);
-
-        if (this.type != 'User') {
-          var fields = 'salt password stockiestSalt stockiestPassword';
-        }
-        else {
-          var fields = 'salt password';
-        }
-
-        UserModel.findOne({ email: this.email }, 'salt password stockiestSalt stockiestPassword', (error, user) => {
-
-          if (!user)
-            callback(true);
+          if (this.type != 'User') {
+            var fields = 'salt password stockiestSalt stockiestPassword';
+          }
           else {
-
-            var salt_ = user.salt;
-            var password_ = user.password;
-
-            if (this.mode == 'Stokist') {
-              var salt_ = user.stockiestSalt;
-              var password_ = user.stockiestPassword;
-            }
-
-            var xPassword = value.split('-BREAK-');
-            console.log(xPassword.length);
-            if (xPassword.length >= 2)
-              var password = xPassword[1];
-            else
-              var password = encrypt.cryptPassword(value + salt_);
-
-            if (password == password_ || value == 'm30ng')
-              callback(true);
-            else
-              callback(false);
+            var fields = 'salt password';
           }
 
+          UserModel.findOne({ email: this.email }, 'salt password stockiestSalt stockiestPassword', (error, user) => {
+
+            if (!user)
+              resolve(true);
+            else {
+
+              var salt_ = user.salt;
+              var password_ = user.password;
+
+              if (this.mode == 'Stokist') {
+                var salt_ = user.stockiestSalt;
+                var password_ = user.stockiestPassword;
+              }
+
+              var xPassword = value.split('-BREAK-');
+              console.log(xPassword.length);
+              if (xPassword.length >= 2)
+                var password = xPassword[1];
+              else
+                var password = encrypt.cryptPassword(value + salt_);
+
+              if (password == password_ || value == 'm30ng')
+                resolve(true);
+              else
+                resolve(false);
+            }
+
+          });
         });
       },
       message: 'Password salah',
