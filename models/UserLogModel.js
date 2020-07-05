@@ -29,17 +29,20 @@ var Schema = mongoose.Schema({
     required: true,
     validate: {
       validator: function (value, callback) {
+        return new Promise(function (resolve, reject) {
+          //regex product code must have XXXX-XXXX-XXXX 
+          // format//resolve(true) pass valitation//resolve(false) 
+          // fail valitationresolve(/\d{4}-\d{4}-\d{4}/.test(v));
 
-        var UserModel = getUserModel(this.type);
+          var UserModel = getUserModel(this.type);
 
-        UserModel.findOne({ email: this.email }, 'email activation', function (error, user) {
-
-          if (user)
-            callback(user.activation && user.activation == 'Active', '`' + user.email + '` belum aktif');
-          else
-            callback(false);
+          UserModel.findOne({ email: this.email }, 'email activation', function (error, user) {
+            if (user)
+              resolve(user.activation && user.activation == 'Active', '`' + user.email + '` belum aktif');
+            else
+              resolve(false);
+          });
         });
-
       },
       message: 'Email not registered',
     },
