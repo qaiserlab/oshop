@@ -4,7 +4,7 @@
       <div class="col-sm-5 col-md-5 col-lg-5">
         <h5>Tentang Kami</h5>
         <div class="logo-footer">
-          <% if (bottomLogo.publication == 'Publish') { %>
+          <% if (bottomLogo && bottomLogo.publication == 'Publish') { %>
             <a class="navbar-brand" href="<%= bottomLogo.url_ %>">
               <img src="<%= bottomLogo.image_ %>" alt="">
             </a>
