@@ -716,10 +716,10 @@
               <td><b>COZMEED INDONESIA</b></td>
             </tr>
             <tr>
-              <td><a href="https://cozmeed.id">https://cozmeed.id</a></td>
+              <td><a href="https://oshop.id">https://oshop.id</a></td>
             </tr>
             <tr>
-              <td>P. +62 (271) 679 2754 E. info@cozmeed.id</td>
+              <td>P. +62 (271) 679 2754 E. info@oshop.id</td>
             </tr>
           </table>
 
@@ -727,7 +727,7 @@
         </tr>
         <tr>
           <td colspan="2" valign="top" style="font-size: 11px; text-align: center">
-            Terima kasih atas kepercayaan Anda berbelanja di Cozmeed
+            Terima kasih atas kepercayaan Anda berbelanja di Oshop
           </td>
         <tr>
         </table>
@@ -786,7 +786,7 @@
           </tr>
           <tr>
             <td colspan="2" valign="top" style="font-size: 11px; text-align: center">
-              Terima kasih atas kepercayaan Anda berbelanja di Cozmeed
+              Terima kasih atas kepercayaan Anda berbelanja di Oshop
             </td>
           <tr>
           </table>

@@ -1,7 +1,7 @@
 <template>
   <div id="HeaderLayout" class="header hidden-xs">
     <a href="#/" class="logo">
-      <img src="../assets/images/logo.png" alt="Cozmeed">
+      <img src="../assets/images/logo.png" alt="Oshop">
     </a>
 
     <div class="navbar-right">
