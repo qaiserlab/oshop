@@ -33,7 +33,7 @@ var Schema = mongoose.Schema({
         console.log('TYPE = ' + this.type);
         console.log('************************************************');
 
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
           //regex product code must have XXXX-XXXX-XXXX 
           // format//resolve(true) pass valitation//resolve(false) 
           // fail valitationresolve(/\d{4}-\d{4}-\d{4}/.test(v));
