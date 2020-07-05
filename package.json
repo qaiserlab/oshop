@@ -23,7 +23,7 @@
     "jsonwebtoken": "^8.2.1",
     "maintenance": "0.0.2",
     "mongodb": "^3.5.9",
-    "mongoose": "^4.11.5",
+    "mongoose": "^5.0.15",
     "mongoose-fill": "^1.6.0",
     "mongoose-model-loader": "0.0.6",
     "morgan": "~1.9.1",
