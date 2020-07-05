@@ -1,0 +1,24 @@
+import Vue from 'vue';
+
+import ContainerComponent from './ContainerComponent'; Vue.component('ui-container', ContainerComponent);
+import RowComponent from './RowComponent'; Vue.component('ui-row', RowComponent);
+import ColComponent from './ColComponent'; Vue.component('ui-col', ColComponent);
+import ButtonComponent from './ButtonComponent'; Vue.component('ui-button', ButtonComponent);
+import TextboxComponent from './TextboxComponent'; Vue.component('ui-textbox', TextboxComponent);
+import TextareaComponent from './TextareaComponent'; Vue.component('ui-textarea', TextareaComponent);
+import SelectComponent from './SelectComponent'; Vue.component('ui-select', SelectComponent);
+import RadioComponent from './RadioComponent'; Vue.component('ui-radio', RadioComponent);
+import CheckboxComponent from './CheckboxComponent'; Vue.component('ui-checkbox', CheckboxComponent);
+import AlertComponent from './AlertComponent'; Vue.component('ui-alert', AlertComponent);
+import PanelComponent from './PanelComponent'; Vue.component('ui-panel', PanelComponent);
+import DatepickerComponent from './DatepickerComponent'; Vue.component('ui-datepicker', DatepickerComponent);
+import LinkComponent from './LinkComponent'; Vue.component('ui-link', LinkComponent);
+import FileComponent from './FileComponent'; Vue.component('ui-file', FileComponent);
+import ImageComponent from './ImageComponent'; Vue.component('ui-image', ImageComponent);
+import TableComponent from './TableComponent'; Vue.component('ui-table', TableComponent);
+import SidebarComponent from './SidebarComponent'; Vue.component('ui-sidebar', SidebarComponent);
+import NavbarComponent from './NavbarComponent'; Vue.component('ui-navbar', NavbarComponent);
+import ButtonbarComponent from './ButtonbarComponent'; Vue.component('ui-buttonbar', ButtonbarComponent);
+import ModalComponent from './ModalComponent'; Vue.component('ui-modal', ModalComponent);
+import SplashComponent from './SplashComponent'; Vue.component('ui-splash', SplashComponent);
+import MenuComponent from './MenuComponent'; Vue.component('ui-menu', MenuComponent);
