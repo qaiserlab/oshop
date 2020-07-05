@@ -119,14 +119,14 @@ Schema.virtual('permalink').get(function () {
 });
 
 Schema.virtual('featuredImage_').get(function () {
-  // return '/writable/archives/' + this.featuredImage;
-  return 'http://cozmeedid.imgix.net/' + this.featuredImage;
+  return '/writable/archives/' + this.featuredImage;
+  // return 'http://cozmeedid.imgix.net/' + this.featuredImage;
 });
 
 Schema.virtual('images_').get(function () {
   return this.images.map(image => {
-    // return '/writable/archives/' + image;
-    return 'http://cozmeedid.imgix.net/' + image;
+    return '/writable/archives/' + image;
+    // return 'http://cozmeedid.imgix.net/' + image;
   });
 });
 

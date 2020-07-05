@@ -28,8 +28,8 @@ Schema.virtual('permalink').get(function () {
 });
 
 Schema.virtual('featuredImage_').get(function () {
-  // return '/writable/archives/' + this.featuredImage;
-  return 'http://cozmeedid.imgix.net/' + this.featuredImage;
+  return '/writable/archives/' + this.featuredImage;
+  // return 'http://cozmeedid.imgix.net/' + this.featuredImage;
 });
 
 mongoose.model('Page', Schema);

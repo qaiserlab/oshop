@@ -23,8 +23,8 @@ function virtual()
 *********************/
 
 Schema.virtual('image_').get(function () {
-  // return '/writable/archives/' + this.image;
-  return 'http://cozmeedid.imgix.net/' + this.image;
+  return '/writable/archives/' + this.image;
+  // return 'http://cozmeedid.imgix.net/' + this.image;
 });
 
 Schema.virtual('url_').get(function () {
