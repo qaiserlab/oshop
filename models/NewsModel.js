@@ -36,7 +36,7 @@ Schema.virtual('permalink').get(function () {
 
 Schema.virtual('featuredImage_').get(function () {
   return '/writable/archives/' + this.featuredImage;
-  // return 'http://cozmeedid.imgix.net/' + this.featuredImage;
+  // return 'http://oshopid.imgix.net/' + this.featuredImage;
 });
 
 Schema.virtual('excerpt').get(function () {

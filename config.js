@@ -1,7 +1,7 @@
 var sha1 = require('sha1');
 
 // var baseUrl = 'http://localhost:3000';
-var baseUrl = 'https://cozmeed.id';
+var baseUrl = 'https://oshop.id';
 
 module.exports = {
   baseUrl,

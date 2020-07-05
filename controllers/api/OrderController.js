@@ -38,7 +38,7 @@ router.get('/', (req, res, next) => {
   // });
 
   var MongoClient = require('mongodb').MongoClient;
-  var url = 'mongodb://127.0.0.1/cozmeed';
+  var url = 'mongodb://127.0.0.1/oshop';
 
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
@@ -172,7 +172,7 @@ router.post('/', validateOrder, async (req, res, next) => {
 
       messager.sendMail(
         [email],
-        'Cozmeed - Konfirmasi Pembayaran Invoice ' + data.code,
+        'Oshop - Konfirmasi Pembayaran Invoice ' + data.code,
         'Pesanan Anda dengan nomor Invoice <b>' + data.code + '</b><br>' +
         'akan segera diproses setelah Anda melakukan pembayaran dan konfirmasi<br>' +
         'silakan membayar sebesar;<br><br>' +
@@ -180,13 +180,13 @@ router.post('/', validateOrder, async (req, res, next) => {
         'ke salah satu dari rekening berikut;<br><br>' +
         bankList + '<br>' +
         'setelah membayar Anda dapat melakukan konfirmasi dengan meng-klik link berikut: <br><br>' +
-        '<a href="http://cozmeed.id/shop/confirm-payment?code=' + data.code + '">KONFIRMASI PEMBAYARAN</a><br><br>'
+        '<a href="http://oshop.id/shop/confirm-payment?code=' + data.code + '">KONFIRMASI PEMBAYARAN</a><br><br>'
         // 'Berikut data pesanan Anda;' +
         // orderList
       );
       // if (phoneNumber)
       //   messager.sendSms(phoneNumber,
-      //   'Info Cozmeed, pesanan Anda telah diproses, cek email utk melihat list barang yg telah dikirim'
+      //   'Info Oshop, pesanan Anda telah diproses, cek email utk melihat list barang yg telah dikirim'
       // );
 
       res.json({
@@ -678,14 +678,14 @@ router.put('/change-state/:code', async (req, res, next) => {
 
     messager.sendMail(
       [email],
-      'Cozmeed - Order Telah Dikirim',
+      'Oshop - Order Telah Dikirim',
       'Pesanan Anda telah dikirim dengan No. Resi ' + data.resi + '. ' +
       'Pesanan yg telah dikirim adalah dengan list pesanan sebagai berikut;' + orderList
     );
 
     if (phoneNumber)
       messager.sendSms(phoneNumber,
-      'Info Cozmeed, pesanan Anda telah dikirim dengan No. Resi ' + data.resi + ', cek email utk melihat list barang yg telah dikirim'
+      'Info Oshop, pesanan Anda telah dikirim dengan No. Resi ' + data.resi + ', cek email utk melihat list barang yg telah dikirim'
     );
   }
 
@@ -907,12 +907,12 @@ router.put('/change-state/:code', async (req, res, next) => {
 
     messager.sendMail(
       [email],
-      'Cozmeed - Order Telah Diproses',
+      'Oshop - Order Telah Diproses',
       'Pesanan Anda telah diproses dengan list pesanan sebagai berikut;' + orderList
     );
     if (phoneNumber)
       messager.sendSms(phoneNumber,
-      'Info Cozmeed, pesanan Anda telah diproses, cek email utk melihat list barang yg telah diproses'
+      'Info Oshop, pesanan Anda telah diproses, cek email utk melihat list barang yg telah diproses'
     );
 
   }
@@ -1043,14 +1043,14 @@ router.put('/state/:id', async (req, res, next) => {
 
     messager.sendMail(
       [email],
-      'Cozmeed - Order Telah Dikirim',
+      'Oshop - Order Telah Dikirim',
       'Pesanan Anda telah dikirim dengan No. Resi ' + data.resi + '. ' +
       'Pesanan yg telah dikirim adalah dengan list pesanan sebagai berikut;' + orderList
     );
 
     if (phoneNumber)
       messager.sendSms(phoneNumber,
-      'Info Cozmeed, pesanan Anda telah dikirim dengan No. Resi ' + data.resi + ', cek email utk melihat list barang yg telah dikirim'
+      'Info Oshop, pesanan Anda telah dikirim dengan No. Resi ' + data.resi + ', cek email utk melihat list barang yg telah dikirim'
     );
   }
 
@@ -1188,7 +1188,7 @@ router.put('/state/:id', async (req, res, next) => {
     BonusDirectSellingModel.create({
       memberId: data.memberId,
       fromId: '-',
-      fromName: 'Cozmeed',
+      fromName: 'Oshop',
       date,
       total,
       bonus,
@@ -1201,7 +1201,7 @@ router.put('/state/:id', async (req, res, next) => {
     BonusPointModel.create({
       memberId: data.memberId,
       fromId: '-',
-      fromName: 'Cozmeed',
+      fromName: 'Oshop',
       date,
       pv,
     });
@@ -1295,7 +1295,7 @@ router.put('/state/:id', async (req, res, next) => {
       BonusPointModel.create({
         memberId: rowUpline.memberId,
         fromId: '-',
-        fromName: 'Cozmeed',
+        fromName: 'Oshop',
         date,
         pv,
       });
@@ -1317,13 +1317,13 @@ router.put('/state/:id', async (req, res, next) => {
 
     messager.sendMail(
       [email],
-      'Cozmeed - Order Telah Diproses',
+      'Oshop - Order Telah Diproses',
       'Pesanan Anda telah diproses dengan list pesanan sebagai berikut;' + orderList
     );
 
     if (phoneNumber)
       messager.sendSms(phoneNumber,
-      'Info Cozmeed, pesanan Anda telah diproses, cek email utk melihat list barang yg telah diproses'
+      'Info Oshop, pesanan Anda telah diproses, cek email utk melihat list barang yg telah diproses'
     );
   }
 

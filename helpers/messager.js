@@ -18,8 +18,8 @@ exports.sendMail = function (to_, subject, bodyHtml) {
 
   var url = 'https://api.elasticemail.com/v2/email/send';
   var data = {
-    'from': 'info@cozmeed.id',
-    'fromName': 'Cozmeed Network',
+    'from': 'info@oshop.id',
+    'fromName': 'Oshop Network',
     // 'apikey': 'e4526bb3-8641-484f-80fa-6e5138cd1157',
     'apikey': 'fffe1604-239f-42d8-b990-702253d2e370',
     subject,

@@ -290,13 +290,13 @@ router.put('/state/:id', async (req, res, next) => {
 
     messager.sendMail(
       [email],
-      'Cozmeed - Order Telah Dikirim',
+      'Oshop - Order Telah Dikirim',
       'Pesanan Anda telah dikirim dengan No. Resi ' + data.resi
     );
 
     if (phoneNumber)
       messager.sendSms(phoneNumber,
-      'Info Cozmeed, pesanan Anda telah dikirim dengan No. Resi ' + data.resi
+      'Info Oshop, pesanan Anda telah dikirim dengan No. Resi ' + data.resi
     );
   }
 
@@ -320,7 +320,7 @@ router.put('/state/:id', async (req, res, next) => {
     </tr>
     <thead><tbody>`;
 
-    // Stock out on Cozmeed
+    // Stock out on Oshop
 
     var rowOrder = await Model.findById(id);
 
@@ -415,7 +415,7 @@ router.put('/state/:id', async (req, res, next) => {
     // BonusDirectSellingModel.create({
     //   memberId: data.memberId,
     //   fromId: '-',
-    //   fromName: 'Cozmeed',
+    //   fromName: 'Oshop',
     //   date,
     //   total,
     //   bonus,
@@ -428,7 +428,7 @@ router.put('/state/:id', async (req, res, next) => {
     // BonusPointModel.create({
     //   memberId: data.memberId,
     //   fromId: '-',
-    //   fromName: 'Cozmeed',
+    //   fromName: 'Oshop',
     //   date,
     //   pv,
     // });
@@ -522,7 +522,7 @@ router.put('/state/:id', async (req, res, next) => {
     //   BonusPointModel.create({
     //     memberId: rowUpline.memberId,
     //     fromId: '-',
-    //     fromName: 'Cozmeed',
+    //     fromName: 'Oshop',
     //     date,
     //     pv,
     //   });
@@ -549,12 +549,12 @@ router.put('/state/:id', async (req, res, next) => {
 
     messager.sendMail(
       [email],
-      'Cozmeed - Order Telah Diproses',
+      'Oshop - Order Telah Diproses',
       'Pesanan Anda telah diproses dengan list pesanan sebagai berikut;' + orderList
     );
     if (phoneNumber)
       messager.sendSms(phoneNumber,
-      'Info Cozmeed, pesanan Anda telah diproses, cek email utk melihat list barang yg telah dikirim'
+      'Info Oshop, pesanan Anda telah diproses, cek email utk melihat list barang yg telah dikirim'
     );
   }
 

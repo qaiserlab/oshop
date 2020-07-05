@@ -269,9 +269,9 @@ router.post('/forgot-password', validateForgotPassword, async (req, res, next) =
 
   messager.sendMail(
     [email],
-    'Cozmeed - Reset Password',
-    'Silakan klik link dibawah ini untuk me-reset password akun Cozmeed Anda;<br><br>' +
-    '<a href="http://cozmeed.id/reset-password/' + code + '">RESET PASSWORD</a>'
+    'Oshop - Reset Password',
+    'Silakan klik link dibawah ini untuk me-reset password akun Oshop Anda;<br><br>' +
+    '<a href="http://oshop.id/reset-password/' + code + '">RESET PASSWORD</a>'
   );
 
   res.json({
@@ -914,12 +914,12 @@ router.post('/register-premium', validateRegisterPremium, async (req, res, next)
 
   messager.sendMail(
     [email],
-    'Terima Kasih Telah Mendaftar di Cozmeed',
-    'Terima kasih, telah melakukan pendaftaran di Cozmeed. Akun Anda belum aktif dan sedang menunggu konfirmasi dari sponsor yg Anda pilih'
+    'Terima Kasih Telah Mendaftar di Oshop',
+    'Terima kasih, telah melakukan pendaftaran di Oshop. Akun Anda belum aktif dan sedang menunggu konfirmasi dari sponsor yg Anda pilih'
   );
   if (phoneNumber)
     messager.sendSms(phoneNumber,
-      'Terima kasih, telah melakukan pendaftaran di Cozmeed. Akun Anda belum aktif dan sedang menunggu konfirmasi dari sponsor yg Anda pilih'
+      'Terima kasih, telah melakukan pendaftaran di Oshop. Akun Anda belum aktif dan sedang menunggu konfirmasi dari sponsor yg Anda pilih'
     );
 
   res.json({
@@ -1096,14 +1096,14 @@ router.post('/approve', validateApprove, async (req, res, next) => {
 
   messager.sendMail(
     [email],
-    'Selamat Bergabung bersama Cozmeed',
-    'Selamat ' + fullName + ' Anda telah diterima sebagai salah satu Member Cozmeed, <br>' +
-    'silakan melakukan login di <a href="http://cozmeed.id">cozmeed.id</a> untuk melihat profil Anda'
+    'Selamat Bergabung bersama Oshop',
+    'Selamat ' + fullName + ' Anda telah diterima sebagai salah satu Member Oshop, <br>' +
+    'silakan melakukan login di <a href="http://oshop.id">oshop.id</a> untuk melihat profil Anda'
   );
   if (phoneNumber)
     messager.sendSms(phoneNumber,
-      'Selamat ' + fullName + ' Anda telah diterima sebagai salah satu Member Cozmeed,' +
-      'silakan melakukan login di cozmeed.id untuk melihat profil Anda'
+      'Selamat ' + fullName + ' Anda telah diterima sebagai salah satu Member Oshop,' +
+      'silakan melakukan login di oshop.id untuk melihat profil Anda'
   );
 
   res.json({

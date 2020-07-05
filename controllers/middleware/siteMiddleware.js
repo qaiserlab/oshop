@@ -18,7 +18,7 @@ module.exports = async function (req, res, next) {
   var titleSlug = xUrl[xUrl.length - 1].split('?')[0];
 
   if (!titleSlug)
-    var title = 'Cozmeed';
+    var title = 'Oshop';
   else
     var title = titleCase(titleSlug.replace(/-/g, ' '));
 

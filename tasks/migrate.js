@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var loader = require('mongoose-model-loader');
 
-var db = mongoose.connect('mongodb://127.0.0.1/cozmeed', {
+var db = mongoose.connect('mongodb://127.0.0.1/oshop', {
   useMongoClient: true,
 });
 
@@ -64,7 +64,7 @@ async function resetShipment() {
     host: "localhost",
     user: "root",
     password: "",
-    database: 'db_cozmeed_net',
+    database: 'db_oshop_net',
   });
 
   var [rsProvince] = await db.query(`select * from tbl_shipment_province`);
@@ -160,7 +160,7 @@ async function resetShipment() {
 async function updateMember() {
   var MemberModel = mongoose.model('Member');
 
-  var rsMember = await MemberModel.find({ email: 'info@cozmeed.net' });
+  var rsMember = await MemberModel.find({ email: 'info@oshop.net' });
 
   rsMember.forEach(row => {
     console.log('member id: ' + row.memberId);
@@ -210,10 +210,10 @@ async function initBank() {
 
   BankModel.collection.drop(() => {
     var data = [
-      { bank: 'BCA', accountNumber: '10001000', accountName: 'Cozmeed Network' },
-      { bank: 'BRI', accountNumber: '10005000', accountName: 'Cozmeed Network' },
-      { bank: 'Mandiri', accountNumber: '10006000', accountName: 'Cozmeed Network' },
-      { bank: 'CIMB Niaga', accountNumber: '10004000', accountName: 'Cozmeed Network' },
+      { bank: 'BCA', accountNumber: '10001000', accountName: 'Oshop Network' },
+      { bank: 'BRI', accountNumber: '10005000', accountName: 'Oshop Network' },
+      { bank: 'Mandiri', accountNumber: '10006000', accountName: 'Oshop Network' },
+      { bank: 'CIMB Niaga', accountNumber: '10004000', accountName: 'Oshop Network' },
     ];
     BankModel.create(data);
   });

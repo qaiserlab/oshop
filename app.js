@@ -12,7 +12,7 @@ var cors = require('cors');
 
 // MongoDB
 
-// var db = mongoose.connect('mongodb://127.0.0.1/cozmeed', {
+// var db = mongoose.connect('mongodb://127.0.0.1/oshop', {
 try {
   var db = mongoose.connect('mongodb+srv://qaiserdev:m30ngm30ngAA@cluster0-51geo.mongodb.net/db_marketplace?retryWrites=true&w=majority', {
     useMongoClient: true,

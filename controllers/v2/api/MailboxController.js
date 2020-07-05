@@ -88,7 +88,7 @@ router.post('/', authMiddleware, validate, async (req, res, next) => {
   var postedOn = Date.now();
   data.postedOn = postedOn;
 
-  var email = 'info@cozmeed.id';
+  var email = 'info@oshop.id';
   messager.sendMailSpecific(
     data.email,
     data.name,
