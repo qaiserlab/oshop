@@ -4,13 +4,13 @@ export default new class {
 
   init() {
     return new Promise((resolve, reject) => {
-      var heroku = (process.env.HOME && process.env.HOME == '/app')?true:false;
-      // if (!localStorage.apiUrl)
-        // localStorage.apiUrl = 'http://localhost:3000/api';
-      if (heroku)
+      // var heroku = (process.env.HOME && process.env.HOME == '/app')?true:false;
+      // // if (!localStorage.apiUrl)
+      //   // localStorage.apiUrl = 'http://localhost:3000/api';
+      // if (heroku)
         localStorage.apiUrl = 'https://oshopdev.herokuapp.com/api';
-      else 
-        localStorage.apiUrl = 'http://localhost:3000/api';
+      // else 
+      //   localStorage.apiUrl = 'http://localhost:3000/api';
         
       $.ajax({
         method: 'GET',
