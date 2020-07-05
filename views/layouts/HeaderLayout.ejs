@@ -13,11 +13,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <% if (topLogo.publication && topLogo.publication == 'Publish') { %>
+          <% if (topLogo.publication) { if (topLogo.publication == 'Publish') { %>
             <a class="navbar-brand" href="<%= topLogo.url_ %>">
               <img src="<%= topLogo.image_ %>" alt="">
             </a>
-          <% } %>
+          <% }} %>
           <div v-cloak class="collapse navbar-collapse justify-content-end" id="navbarResponsive">
             <ul class="navbar-nav">
               <%# <li class="nav-item">
