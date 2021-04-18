@@ -5,7 +5,6 @@ A buying and selling site application that has an integrated Multi Level Marketi
 - Website			    : https://oshopdev.herokuapp.com/
 - Username			  : member
 - Password			  : member123
-- 
 - Admin/Dashboard : https://oshopdev.herokuapp.com/admin
 - Username			  : admin
 - Password			  : admin123
