@@ -18,7 +18,7 @@
     "currency-formatter": "^1.2.1",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
-    "express": "~4.16.1",
+    "express": "~4.17.3",
     "express-await": "0.0.4",
     "express-session": "^1.15.5",
     "http-errors": "~1.6.3",
